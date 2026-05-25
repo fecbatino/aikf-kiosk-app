@@ -5,12 +5,14 @@ import { useTranslation } from 'react-i18next';
 import DonatePage from './pages/DonatePage';
 import DonationHistoryPage from './pages/DonationHistoryPage';
 import { useAuth } from './contexts/AuthContext';
+import { useThemeToggle } from './ThemeWrapper';
 
 const AdminPage = React.lazy(() => import('./pages/AdminPage'));
 
 function App() {
   const { t, i18n } = useTranslation();
   const { isAuthenticated, logout } = useAuth();
+  const { isDark, toggleTheme } = useThemeToggle();
 
   return (
     <>
@@ -37,14 +39,14 @@ function App() {
       )}
 
       {/* Main Kiosk Header */}
-      <AppBar position="static" color="transparent" elevation={0} sx={{
-        borderBottom: '1px solid rgba(255,255,255,0.05)',
-        bgcolor: 'background.paper'
+      <AppBar position="static" elevation={0} sx={{
+        bgcolor: isDark ? '#0d1117' : 'primary.main',
+        borderBottom: isDark ? '1px solid rgba(255,255,255,0.05)' : 'none',
       }}>
         <Toolbar sx={{ justifyContent: 'space-between', py: 1, px: 3 }}>
           <Typography variant="h5" component="div" sx={{
             fontWeight: 800,
-            color: 'primary.main',
+            color: '#ffffff',
             letterSpacing: '-0.02em',
             display: 'flex',
             alignItems: 'center',
@@ -53,22 +55,42 @@ function App() {
           }}>
             {t('kiosk_title')}
           </Typography>
-          
-          {/* Touch-Optimized Language Selector */}
+
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {/* Theme toggle */}
+            <Button
+              onClick={toggleTheme}
+              size="small"
+              sx={{
+                minWidth: '42px',
+                width: '42px',
+                height: '42px',
+                borderRadius: '10px',
+                padding: 0,
+                fontSize: '1.2rem',
+                color: '#ffffff',
+                bgcolor: 'rgba(255,255,255,0.12)',
+                border: '1px solid rgba(255,255,255,0.2)',
+                mr: 1,
+                '&:hover': { bgcolor: 'rgba(255,255,255,0.22)' },
+              }}
+              title={isDark ? 'Islamisches Theme' : 'Nacht-Theme'}
+            >
+              {isDark ? '🕌' : '🌙'}
+            </Button>
+
             {/* Globe Icon */}
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.5, color: '#9ca3af', marginRight: '4px' }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.6, marginRight: '4px' }}>
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="2" y1="12" x2="22" y2="12"></line>
               <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
             </svg>
-            
+
             {['de', 'en', 'fr', 'ar'].map((lang) => (
               <Button
                 key={lang}
                 size="small"
                 variant={i18n.language === lang ? 'contained' : 'outlined'}
-                color={i18n.language === lang ? 'primary' : 'inherit'}
                 onClick={() => i18n.changeLanguage(lang)}
                 sx={{
                   minWidth: '42px',
@@ -78,11 +100,10 @@ function App() {
                   fontWeight: 'bold',
                   fontSize: '0.85rem',
                   padding: 0,
-                  borderColor: i18n.language === lang ? 'primary.main' : 'rgba(255,255,255,0.1)',
-                  color: i18n.language === lang ? 'primary.contrastText' : 'text.secondary',
-                  '&:hover': {
-                    bgcolor: i18n.language === lang ? 'primary.main' : 'rgba(255,255,255,0.05)',
-                  }
+                  bgcolor: i18n.language === lang ? 'rgba(255,255,255,0.25)' : 'transparent',
+                  borderColor: i18n.language === lang ? '#ffffff' : 'rgba(255,255,255,0.3)',
+                  color: '#ffffff',
+                  '&:hover': { bgcolor: 'rgba(255,255,255,0.18)' },
                 }}
               >
                 {lang.toUpperCase()}
