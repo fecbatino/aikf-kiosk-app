@@ -4,20 +4,14 @@ import { initReactI18next } from 'react-i18next';
 // Importiere Übersetzungsdateien
 import translationEN from './locales/en/translation.json';
 import translationDE from './locales/de/translation.json';
-import translationFR from './locales/fr/translation.json'; // Importiere die französische Übersetzung
+import translationFR from './locales/fr/translation.json';
+import translationAR from './locales/ar/translation.json';
 
-// the translations
-// (tip move them in a JSON file and import them)
 const resources = {
-  en: {
-    translation: translationEN
-  },
-  de: {
-    translation: translationDE
-  },
-  fr: {
-    translation: translationFR // Füge die französische Ressource hinzu
-  }
+  en: { translation: translationEN },
+  de: { translation: translationDE },
+  fr: { translation: translationFR },
+  ar: { translation: translationAR },
 };
 
 i18n
