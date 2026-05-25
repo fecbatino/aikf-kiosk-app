@@ -1,13 +1,15 @@
 import Dexie, { Table } from 'dexie';
 
+export type DonationCategory = 'general' | 'education' | 'mosque_purchase' | 'ramadan' | 'Unkategorisiert';
+
 export interface Donation {
   id?: number;
   amount: number;
   qrCodeValue: string;
   timestamp: Date;
-  category?: string; // Neue Spendenkategorie
-  donorName?: string; // Name des Spenders
-  donorEmail?: string; // E-Mail des Spenders
+  category?: DonationCategory | string;
+  donorName?: string;
+  donorEmail?: string;
 }
 
 export class KioskDexie extends Dexie {

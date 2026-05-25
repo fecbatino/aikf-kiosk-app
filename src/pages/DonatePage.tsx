@@ -8,10 +8,10 @@ import { useSnackbar } from '../contexts/SnackbarContext';
 
 const donationAmounts = [5, 10, 20, 50, 100];
 const donationCategories = [
-  { value: 'general', labelKey: 'category_general' },
-  { value: 'education', labelKey: 'category_education' },
-  { value: 'health', labelKey: 'category_health' },
-  { value: 'food', labelKey: 'category_food' },
+  { value: 'general', labelKey: 'category_general', icon: '🕌', color: null },
+  { value: 'education', labelKey: 'category_education', icon: '📚', color: null },
+  { value: 'mosque_purchase', labelKey: 'category_mosque_purchase', icon: '🏛️', color: '#C9A84C' },
+  { value: 'ramadan', labelKey: 'category_ramadan', icon: '🌙', color: '#2E7D32' },
 ];
 
 function DonatePage() {
@@ -388,26 +388,39 @@ function DonatePage() {
             </Typography>
             
             <Grid container spacing={1.5} sx={{ mb: 4 }}>
-              {donationCategories.map((c) => (
-                <Grid size={{ xs: 6, sm: 3 }} key={c.value}>
-                  <Button
-                    variant={selectedCategory === c.value ? 'contained' : 'outlined'}
-                    color={selectedCategory === c.value ? 'primary' : 'inherit'}
-                    onClick={() => handleCategorySelect(c.value)}
-                    fullWidth
-                    sx={{
-                      height: '52px',
-                      borderRadius: '10px',
-                      fontWeight: 'bold',
-                      fontSize: '0.9rem',
-                      borderColor: selectedCategory === c.value ? 'primary.main' : 'rgba(255,255,255,0.08)',
-                      color: selectedCategory === c.value ? 'primary.contrastText' : 'text.secondary',
-                    }}
-                  >
-                    {t(c.labelKey)}
-                  </Button>
-                </Grid>
-              ))}
+              {donationCategories.map((c) => {
+                const activeColor = c.color || '#06b6d4';
+                const isActive = selectedCategory === c.value;
+                return (
+                  <Grid size={{ xs: 6, sm: 3 }} key={c.value}>
+                    <Button
+                      variant={isActive ? 'contained' : 'outlined'}
+                      onClick={() => handleCategorySelect(c.value)}
+                      fullWidth
+                      sx={{
+                        height: '72px',
+                        borderRadius: '12px',
+                        fontWeight: 'bold',
+                        fontSize: '0.85rem',
+                        flexDirection: 'column',
+                        gap: 0.5,
+                        borderColor: isActive ? activeColor : 'rgba(255,255,255,0.08)',
+                        color: isActive ? '#ffffff' : 'text.secondary',
+                        bgcolor: isActive ? activeColor : 'transparent',
+                        boxShadow: isActive ? `0 4px 14px ${activeColor}55` : 'none',
+                        '&:hover': {
+                          bgcolor: isActive ? activeColor : `${activeColor}18`,
+                          borderColor: activeColor,
+                          transform: 'translateY(-1px)',
+                        },
+                      }}
+                    >
+                      <span style={{ fontSize: '1.5rem', lineHeight: 1 }}>{c.icon}</span>
+                      <span>{t(c.labelKey)}</span>
+                    </Button>
+                  </Grid>
+                );
+              })}
             </Grid>
 
             {/* Navigation Button */}
