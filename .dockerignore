@@ -3,4 +3,6 @@ dist
 .git
 .github
 *.md
-.env*
+.env.development
+.env.local
+.env.test
