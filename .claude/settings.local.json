@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rtk ls *)",
+      "Bash(git init *)",
+      "Bash(rtk git *)",
+      "Bash(git config *)",
+      "Bash(git checkout *)",
+      "Bash(rtk read *)",
+      "Bash(node scripts/generate-icons.js)",
+      "Bash(node \"C:\\\\Users\\\\fecha\\\\Dev\\\\aikf-kiosk-app\\\\scripts\\\\generate-icons.cjs\")",
+      "Bash(npm install *)",
+      "Bash(npm test *)",
+      "Bash(rtk npm *)",
+      "Bash(git remote *)",
+      "Bash(git filter-repo *)",
+      "Bash(git filter-branch *)",
+      "Bash(FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch --force --index-filter \"git rm --cached --ignore-unmatch .env.development .env.production\" --prune-empty --tag-name-filter cat -- --all)",
+      "Bash(git rm *)"
+    ]
+  }
+}
