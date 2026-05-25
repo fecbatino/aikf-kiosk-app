@@ -67,9 +67,34 @@ function DonatePage() {
     }
   };
 
+  const buildGiroCode = (
+    bic: string,
+    name: string,
+    iban: string,
+    amount: number,
+    reference: string = 'Spende AIKF'
+  ): string => {
+    const cleanIban = iban.replace(/\s/g, '');
+    const cleanBic = bic.replace(/\s/g, '');
+    const amountStr = `EUR${amount.toFixed(2)}`;
+    return [
+      'BCD',
+      '002',
+      '1',
+      'SCT',
+      cleanBic,
+      name.substring(0, 70),
+      cleanIban,
+      amountStr,
+      '',
+      reference.substring(0, 140),
+      '',
+    ].join('\n');
+  };
+
   const generateBothQrCodes = (value: number, category: string) => {
-    const purpose = `Spende AIKF - ${t(`category_${category}`)}`;
-    setSepaQrValue(`BCD\n001\n1\nSCT\n${settings.sepaBic}\n${settings.sepaName}\n${settings.sepaIban}\nEUR${value.toFixed(2)}\n${purpose}`);
+    const reference = `Spende AIKF - ${t(`category_${category}`)}`;
+    setSepaQrValue(buildGiroCode(settings.sepaBic, settings.sepaName, settings.sepaIban, value, reference));
     setPaymentLinkQrValue(`${settings.paymentLink}?amount=${value}&category=${category}`);
   };
 
@@ -648,7 +673,7 @@ function DonatePage() {
                         borderRadius: '12px',
                         boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
                       }}>
-                        <QRCodeSVG value={sepaQrValue} size={180} level="H" includeMargin={false} />
+                        <QRCodeSVG value={sepaQrValue} size={220} level="M" includeMargin={false} />
                       </Box>
                     ) : (
                       <Box sx={{ height: 213, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
