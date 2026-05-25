@@ -6,11 +6,16 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:android": "tsc && vite build --base /",
+    "cap:sync": "npm run build:android && npx cap sync android",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@capacitor/android": "^8.3.4",
+    "@capacitor/cli": "^8.3.4",
+    "@capacitor/core": "^8.3.4",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
