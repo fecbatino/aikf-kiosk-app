@@ -37,8 +37,8 @@ function DonatePage() {
   const [donorEmailError, setDonorEmailError] = useState(false);
 
   // QR Code states
-  const [paymentMethod, setPaymentMethod] = useState<string>('sepa');
-  const [qrValue, setQrValue] = useState<string>('');
+  const [sepaQrValue, setSepaQrValue] = useState<string>('');
+  const [paymentLinkQrValue, setPaymentLinkQrValue] = useState<string>('');
 
   // Thank you screen states
   const [showThankYou, setShowThankYou] = useState(false);
@@ -67,22 +67,10 @@ function DonatePage() {
     }
   };
 
-  const generateQrCode = (value: number, method: string, category: string) => {
-    let currentQrValue = '';
+  const generateBothQrCodes = (value: number, category: string) => {
     const purpose = `Spende AIKF - ${t(`category_${category}`)}`;
-
-    switch (method) {
-      case 'sepa':
-        currentQrValue = `BCD\n001\n1\nSCT\n${settings.sepaBic}\n${settings.sepaName}\n${settings.sepaIban}\nEUR${value.toFixed(2)}\n${purpose}`;
-        break;
-      case 'payment_link':
-        currentQrValue = `${settings.paymentLink}?amount=${value}&category=${category}`;
-        break;
-      default:
-        currentQrValue = '';
-    }
-
-    setQrValue(currentQrValue);
+    setSepaQrValue(`BCD\n001\n1\nSCT\n${settings.sepaBic}\n${settings.sepaName}\n${settings.sepaIban}\nEUR${value.toFixed(2)}\n${purpose}`);
+    setPaymentLinkQrValue(`${settings.paymentLink}?amount=${value}&category=${category}`);
   };
 
   const handleAmountChange = (newAmount: number) => {
@@ -97,14 +85,6 @@ function DonatePage() {
     setCustomAmount(value);
     setAmount('');
     validateAmount(value);
-  };
-
-  const handlePaymentMethodSelect = (newMethod: string) => {
-    setPaymentMethod(newMethod);
-    const currentAmount = amount || customAmount;
-    if (currentAmount) {
-      generateQrCode(parseFloat(currentAmount as string), newMethod, selectedCategory);
-    }
   };
 
   const handleCategorySelect = (newCategory: string) => {
@@ -143,7 +123,7 @@ function DonatePage() {
 
     if (isValid) {
       const finalAmount = amount || customAmount;
-      generateQrCode(parseFloat(finalAmount as string), paymentMethod, selectedCategory);
+      generateBothQrCodes(parseFloat(finalAmount as string), selectedCategory);
       setActiveStep(2);
     }
   };
@@ -155,7 +135,7 @@ function DonatePage() {
     try {
       await db.donations.add({
         amount: finalAmount,
-        qrCodeValue: qrValue,
+        qrCodeValue: sepaQrValue,
         timestamp: new Date(),
         category: selectedCategory,
         donorName: isAnonymous ? 'Anonym' : donorName.trim(),
@@ -190,7 +170,8 @@ function DonatePage() {
     }
     setAmount('');
     setCustomAmount('');
-    setQrValue('');
+    setSepaQrValue('');
+    setPaymentLinkQrValue('');
     setCustomAmountError(false);
     setCustomAmountErrorMessage('');
     setDonorName('');
@@ -276,7 +257,7 @@ function DonatePage() {
   }
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="lg">
       
       {/* Custom Stepper Progress Indicator */}
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 5, gap: 1 }}>
@@ -570,15 +551,15 @@ function DonatePage() {
       )}
 
       {activeStep === 2 && (
-        <Grid container spacing={4} sx={{ textAlign: 'left' }}>
+        <Grid container spacing={3} sx={{ textAlign: 'left' }}>
           {/* Summary Panel */}
-          <Grid size={{ xs: 12, md: 5 }}>
-            <Paper elevation={0} sx={{ p: 4, borderRadius: 3, bgcolor: 'background.paper', height: '100%' }}>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Paper elevation={0} sx={{ p: 4, borderRadius: 3, bgcolor: 'background.paper', height: '100%', display: 'flex', flexDirection: 'column' }}>
               <Typography variant="h5" component="h2" sx={{ fontWeight: 800, mb: 3 }}>
                 {t('donation_summary', 'Zusammenfassung')}
               </Typography>
-              
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, mb: 4 }}>
+
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, mb: 4, flex: 1 }}>
                 <Box>
                   <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
                     {t('donation_amount_summary', 'Spendenhöhe')}
@@ -587,7 +568,7 @@ function DonatePage() {
                     €{amount || customAmount}
                   </Typography>
                 </Box>
-                
+
                 <Box>
                   <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
                     {t('donation_category_summary', 'Kategorie')}
@@ -596,7 +577,7 @@ function DonatePage() {
                     {t(`category_${selectedCategory}`)}
                   </Typography>
                 </Box>
-                
+
                 <Box sx={{ borderTop: '1px solid rgba(255,255,255,0.05)', pt: 2.5 }}>
                   <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
                     {t('donor_summary', 'Spender')}
@@ -616,83 +597,93 @@ function DonatePage() {
                 variant="outlined"
                 fullWidth
                 onClick={() => setActiveStep(1)}
-                sx={{ height: '54px', borderRadius: '27px', borderColor: 'rgba(255,255,255,0.1)', mt: 'auto' }}
+                sx={{ height: '54px', borderRadius: '27px', borderColor: 'rgba(255,255,255,0.1)' }}
               >
                 ⬅ {t('btn_back', 'Zurück')}
               </Button>
             </Paper>
           </Grid>
 
-          {/* QR Code and Payment selection */}
-          <Grid size={{ xs: 12, md: 7 }}>
-            <Paper elevation={0} sx={{ p: 4, borderRadius: 3, bgcolor: 'background.paper', textAlign: 'center' }}>
-              <Typography variant="h6" sx={{ fontWeight: 700, mb: 2, textAlign: 'left' }}>
-                {t('payment_method')}
+          {/* Dual QR Code Panel */}
+          <Grid size={{ xs: 12, md: 8 }}>
+            <Paper elevation={0} sx={{ p: 4, borderRadius: 3, bgcolor: 'background.paper' }}>
+              <Typography variant="h6" sx={{ fontWeight: 700, mb: 3 }}>
+                {t('scan_qr_code', 'QR-Code scannen und bezahlen')}
               </Typography>
-              
-              <Grid container spacing={2} sx={{ mb: 4 }}>
-                {[
-                  { value: 'sepa', labelKey: 'method_sepa', desc: 'Überweisung mit IBAN' },
-                  { value: 'payment_link', labelKey: 'method_payment_link', desc: 'Kreditkarte, PayPal etc.' }
-                ].map((m) => (
-                  <Grid size={{ xs: 12, sm: 6 }} key={m.value}>
-                    <Paper
-                      onClick={() => handlePaymentMethodSelect(m.value)}
-                      sx={{
-                        p: 2,
+
+              <Grid container spacing={3}>
+                {/* SEPA QR Code */}
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <Paper elevation={0} sx={{
+                    p: 3,
+                    borderRadius: 3,
+                    border: '2px solid #2E7D32',
+                    bgcolor: 'rgba(46, 125, 50, 0.06)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 2,
+                    height: '100%',
+                  }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#4CAF50', letterSpacing: 0.3, textAlign: 'center' }}>
+                      Banküberweisung (SEPA)
+                    </Typography>
+                    {sepaQrValue ? (
+                      <Box sx={{
+                        p: 1.5,
+                        bgcolor: '#ffffff',
                         borderRadius: '12px',
-                        cursor: 'pointer',
-                        border: '2px solid',
-                        borderColor: paymentMethod === m.value ? 'primary.main' : 'rgba(255,255,255,0.05)',
-                        bgcolor: paymentMethod === m.value ? 'rgba(6, 182, 212, 0.05)' : 'rgba(255,255,255,0.01)',
-                        transition: 'all 0.2s',
-                        userSelect: 'none',
-                        textAlign: 'left',
-                        '&:hover': {
-                          borderColor: paymentMethod === m.value ? 'primary.main' : 'rgba(255,255,255,0.1)',
-                        }
-                      }}
-                    >
-                      <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: paymentMethod === m.value ? 'primary.main' : 'text.primary' }}>
-                        {t(m.labelKey)}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
-                        {m.desc}
-                      </Typography>
-                    </Paper>
-                  </Grid>
-                ))}
+                        boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+                      }}>
+                        <QRCodeSVG value={sepaQrValue} size={180} level="H" includeMargin={false} />
+                      </Box>
+                    ) : (
+                      <Box sx={{ height: 213, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        Lade...
+                      </Box>
+                    )}
+                    <Typography variant="caption" sx={{ color: 'text.secondary', textAlign: 'center' }}>
+                      Scanne mit deiner Banking-App
+                    </Typography>
+                  </Paper>
+                </Grid>
+
+                {/* Payment Link QR Code */}
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <Paper elevation={0} sx={{
+                    p: 3,
+                    borderRadius: 3,
+                    border: '2px solid #C9A84C',
+                    bgcolor: 'rgba(201, 168, 76, 0.06)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 2,
+                    height: '100%',
+                  }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#C9A84C', letterSpacing: 0.3, textAlign: 'center' }}>
+                      Online bezahlen
+                    </Typography>
+                    {paymentLinkQrValue ? (
+                      <Box sx={{
+                        p: 1.5,
+                        bgcolor: '#ffffff',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+                      }}>
+                        <QRCodeSVG value={paymentLinkQrValue} size={180} level="H" includeMargin={false} />
+                      </Box>
+                    ) : (
+                      <Box sx={{ height: 213, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        Lade...
+                      </Box>
+                    )}
+                    <Typography variant="caption" sx={{ color: 'text.secondary', textAlign: 'center' }}>
+                      PayPal · Kreditkarte · Apple Pay
+                    </Typography>
+                  </Paper>
+                </Grid>
               </Grid>
-
-              <Typography variant="body2" sx={{ mb: 3, color: 'text.secondary' }}>
-                {t('scan_qr_code')}
-              </Typography>
-
-              {qrValue ? (
-                <Box sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  p: 2,
-                  bgcolor: '#ffffff',
-                  borderRadius: '16px',
-                  width: 'fit-content',
-                  margin: '0 auto 24px',
-                  boxShadow: '0 8px 24px rgba(0,0,0,0.15)'
-                }}>
-                  <QRCodeSVG value={qrValue} size={210} level="H" includeMargin={true} />
-                </Box>
-              ) : (
-                <Box sx={{ height: 242, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  Lade QR-Code...
-                </Box>
-              )}
-
-              <Typography variant="caption" sx={{ display: 'block', mb: 4, color: 'text.secondary', opacity: 0.75 }}>
-                {t('placeholder_qr_code_extended', {
-                  method: t(`method_${paymentMethod}`),
-                  category: t(`category_${selectedCategory}`)
-                })}
-              </Typography>
 
               <Button
                 variant="contained"
@@ -700,6 +691,7 @@ function DonatePage() {
                 onClick={handleFinishDonation}
                 fullWidth
                 sx={{
+                  mt: 4,
                   height: '56px',
                   borderRadius: '28px',
                   fontSize: '1.1rem',
