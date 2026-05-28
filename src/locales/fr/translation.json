@@ -70,5 +70,10 @@
   "admin_edit_settings_button": "Modifier les paramètres",
   "admin_logout_button": "Déconnexion",
   "donation_id": "ID du don",
-  "donation_qr_code_value": "Valeur du code QR"
+  "donation_qr_code_value": "Valeur du code QR",
+  "select_payment_method": "Choisir la méthode de paiement",
+  "payment_method_sepa": "Virement bancaire (SEPA)",
+  "payment_method_online": "Payer en ligne",
+  "payment_method_sepa_desc": "Scannez avec votre application bancaire",
+  "payment_method_online_desc": "PayPal · Carte bancaire · Apple Pay"
 }

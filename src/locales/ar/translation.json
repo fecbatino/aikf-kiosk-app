@@ -70,5 +70,10 @@
   "admin_edit_settings_button": "تعديل الإعدادات",
   "admin_logout_button": "تسجيل الخروج",
   "donation_id": "رقم التبرع",
-  "donation_qr_code_value": "قيمة رمز QR"
+  "donation_qr_code_value": "قيمة رمز QR",
+  "select_payment_method": "اختر طريقة الدفع",
+  "payment_method_sepa": "تحويل مصرفي (SEPA)",
+  "payment_method_online": "الدفع الإلكتروني",
+  "payment_method_sepa_desc": "امسح بتطبيق البنك الخاص بك",
+  "payment_method_online_desc": "PayPal · بطاقة ائتمان · Apple Pay"
 }

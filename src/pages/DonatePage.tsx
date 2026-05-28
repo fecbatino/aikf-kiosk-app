@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Typography, Box, Button, TextField, Grid, Container, Paper, Checkbox, FormControlLabel } from '@mui/material';
+import { Typography, Box, Button, TextField, Grid, Container, Paper, Checkbox, FormControlLabel, Collapse } from '@mui/material';
 import { QRCodeSVG } from 'qrcode.react';
 import { db } from '../database';
 import { useTranslation } from 'react-i18next';
@@ -39,6 +39,7 @@ function DonatePage() {
   // QR Code states
   const [sepaQrValue, setSepaQrValue] = useState<string>('');
   const [paymentLinkQrValue, setPaymentLinkQrValue] = useState<string>('');
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'sepa' | 'online'>('sepa');
 
   // Thank you screen states
   const [showThankYou, setShowThankYou] = useState(false);
@@ -204,6 +205,7 @@ function DonatePage() {
     setIsAnonymous(false);
     setDonorNameError(false);
     setDonorEmailError(false);
+    setSelectedPaymentMethod('sepa');
     setActiveStep(0);
     setShowThankYou(false);
   };
@@ -642,86 +644,136 @@ function DonatePage() {
             </Paper>
           </Grid>
 
-          {/* Dual QR Code Panel */}
+          {/* Payment Panel */}
           <Grid size={{ xs: 12, md: 8 }}>
             <Paper elevation={0} sx={{ p: 4, borderRadius: 3, bgcolor: 'background.paper' }}>
               <Typography variant="h6" sx={{ fontWeight: 700, mb: 3 }}>
-                {t('scan_qr_code', 'QR-Code scannen und bezahlen')}
+                {t('select_payment_method')}
               </Typography>
 
-              <Grid container spacing={3}>
-                {/* SEPA QR Code */}
+              {/* Method selection cards */}
+              <Grid container spacing={2} sx={{ mb: 3 }}>
                 <Grid size={{ xs: 12, sm: 6 }}>
-                  <Paper elevation={0} sx={{
-                    p: 3,
-                    borderRadius: 3,
-                    border: '2px solid #2E7D32',
-                    bgcolor: 'rgba(46, 125, 50, 0.06)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: 2,
-                    height: '100%',
-                  }}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#4CAF50', letterSpacing: 0.3, textAlign: 'center' }}>
-                      Banküberweisung (SEPA)
-                    </Typography>
-                    {sepaQrValue ? (
+                  <Paper
+                    onClick={() => setSelectedPaymentMethod('sepa')}
+                    elevation={0}
+                    sx={{
+                      p: 3,
+                      borderRadius: 3,
+                      cursor: 'pointer',
+                      border: selectedPaymentMethod === 'sepa' ? '2px solid #2E7D32' : '2px solid rgba(128,128,128,0.15)',
+                      bgcolor: selectedPaymentMethod === 'sepa' ? 'rgba(46, 125, 50, 0.08)' : 'transparent',
+                      transition: 'all 0.2s ease-in-out',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: 1,
+                      position: 'relative',
+                      '&:hover': {
+                        borderColor: '#2E7D32',
+                        bgcolor: 'rgba(46, 125, 50, 0.05)',
+                      },
+                    }}
+                  >
+                    {selectedPaymentMethod === 'sepa' && (
                       <Box sx={{
-                        p: 1.5,
-                        bgcolor: '#ffffff',
-                        borderRadius: '12px',
-                        boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
-                      }}>
-                        <QRCodeSVG value={sepaQrValue} size={220} level="M" includeMargin={false} />
-                      </Box>
-                    ) : (
-                      <Box sx={{ height: 213, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        Lade...
-                      </Box>
+                        position: 'absolute',
+                        top: 10,
+                        right: 10,
+                        width: 22,
+                        height: 22,
+                        borderRadius: '50%',
+                        bgcolor: '#2E7D32',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#fff',
+                        fontSize: '0.75rem',
+                        fontWeight: 'bold',
+                      }}>✓</Box>
                     )}
-                    <Typography variant="caption" sx={{ color: 'text.secondary', textAlign: 'center' }}>
-                      Scanne mit deiner Banking-App
+                    <Typography sx={{ fontSize: '2rem', lineHeight: 1 }}>🏦</Typography>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#4CAF50', textAlign: 'center' }}>
+                      {t('payment_method_sepa')}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'center' }}>
+                      {t('payment_method_sepa_desc')}
                     </Typography>
                   </Paper>
                 </Grid>
 
-                {/* Payment Link QR Code */}
                 <Grid size={{ xs: 12, sm: 6 }}>
-                  <Paper elevation={0} sx={{
-                    p: 3,
-                    borderRadius: 3,
-                    border: '2px solid #C9A84C',
-                    bgcolor: 'rgba(201, 168, 76, 0.06)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: 2,
-                    height: '100%',
-                  }}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#C9A84C', letterSpacing: 0.3, textAlign: 'center' }}>
-                      Online bezahlen
-                    </Typography>
-                    {paymentLinkQrValue ? (
+                  <Paper
+                    onClick={() => setSelectedPaymentMethod('online')}
+                    elevation={0}
+                    sx={{
+                      p: 3,
+                      borderRadius: 3,
+                      cursor: 'pointer',
+                      border: selectedPaymentMethod === 'online' ? '2px solid #C9A84C' : '2px solid rgba(128,128,128,0.15)',
+                      bgcolor: selectedPaymentMethod === 'online' ? 'rgba(201, 168, 76, 0.08)' : 'transparent',
+                      transition: 'all 0.2s ease-in-out',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: 1,
+                      position: 'relative',
+                      '&:hover': {
+                        borderColor: '#C9A84C',
+                        bgcolor: 'rgba(201, 168, 76, 0.05)',
+                      },
+                    }}
+                  >
+                    {selectedPaymentMethod === 'online' && (
                       <Box sx={{
-                        p: 1.5,
-                        bgcolor: '#ffffff',
-                        borderRadius: '12px',
-                        boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
-                      }}>
-                        <QRCodeSVG value={paymentLinkQrValue} size={180} level="H" includeMargin={false} />
-                      </Box>
-                    ) : (
-                      <Box sx={{ height: 213, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        Lade...
-                      </Box>
+                        position: 'absolute',
+                        top: 10,
+                        right: 10,
+                        width: 22,
+                        height: 22,
+                        borderRadius: '50%',
+                        bgcolor: '#C9A84C',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#fff',
+                        fontSize: '0.75rem',
+                        fontWeight: 'bold',
+                      }}>✓</Box>
                     )}
-                    <Typography variant="caption" sx={{ color: 'text.secondary', textAlign: 'center' }}>
-                      PayPal · Kreditkarte · Apple Pay
+                    <Typography sx={{ fontSize: '2rem', lineHeight: 1 }}>💳</Typography>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#C9A84C', textAlign: 'center' }}>
+                      {t('payment_method_online')}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'center' }}>
+                      {t('payment_method_online_desc')}
                     </Typography>
                   </Paper>
                 </Grid>
               </Grid>
+
+              {/* QR Code — only selected method */}
+              <Collapse in={selectedPaymentMethod === 'sepa'} timeout={300}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, mb: 3 }}>
+                  <Box sx={{ p: 1.5, bgcolor: '#ffffff', borderRadius: '12px', boxShadow: '0 4px 16px rgba(0,0,0,0.2)' }}>
+                    {sepaQrValue && <QRCodeSVG value={sepaQrValue} size={220} level="M" includeMargin={false} />}
+                  </Box>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('payment_method_sepa_desc')}
+                  </Typography>
+                </Box>
+              </Collapse>
+
+              <Collapse in={selectedPaymentMethod === 'online'} timeout={300}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, mb: 3 }}>
+                  <Box sx={{ p: 1.5, bgcolor: '#ffffff', borderRadius: '12px', boxShadow: '0 4px 16px rgba(0,0,0,0.2)' }}>
+                    {paymentLinkQrValue && <QRCodeSVG value={paymentLinkQrValue} size={220} level="H" includeMargin={false} />}
+                  </Box>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('payment_method_online_desc')}
+                  </Typography>
+                </Box>
+              </Collapse>
 
               <Button
                 variant="contained"
@@ -729,7 +781,7 @@ function DonatePage() {
                 onClick={handleFinishDonation}
                 fullWidth
                 sx={{
-                  mt: 4,
+                  mt: 2,
                   height: '56px',
                   borderRadius: '28px',
                   fontSize: '1.1rem',

@@ -1,5 +1,5 @@
-import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
+import React, { useState } from 'react';
+import { AppBar, Toolbar, Typography, Button, Box, Menu, MenuItem } from '@mui/material';
 import { Routes, Route, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import DonatePage from './pages/DonatePage';
@@ -13,6 +13,17 @@ function App() {
   const { t, i18n } = useTranslation();
   const { isAuthenticated, logout } = useAuth();
   const { isDark, toggleTheme } = useThemeToggle();
+
+  const [langMenuAnchor, setLangMenuAnchor] = useState<null | HTMLElement>(null);
+
+  const langOptions = [
+    { code: 'de', flag: '🇩🇪', label: 'DE', name: 'Deutsch' },
+    { code: 'en', flag: '🇬🇧', label: 'EN', name: 'English' },
+    { code: 'fr', flag: '🇫🇷', label: 'FR', name: 'Français' },
+    { code: 'ar', flag: '🇸🇦', label: 'AR', name: 'العربية' },
+  ];
+
+  const currentLang = langOptions.find(l => l.code === i18n.language) || langOptions[0];
 
   return (
     <>
@@ -79,36 +90,70 @@ function App() {
               {isDark ? '🕌' : '🌙'}
             </Button>
 
-            {/* Globe Icon */}
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.6, marginRight: '4px' }}>
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="2" y1="12" x2="22" y2="12"></line>
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-            </svg>
+            {/* Language dropdown */}
+            <Button
+              onClick={(e) => setLangMenuAnchor(e.currentTarget)}
+              size="small"
+              sx={{
+                height: '42px',
+                borderRadius: '10px',
+                px: 1.5,
+                gap: 0.75,
+                bgcolor: 'rgba(255,255,255,0.12)',
+                border: '1px solid rgba(255,255,255,0.2)',
+                color: '#ffffff',
+                fontWeight: 'bold',
+                fontSize: '0.85rem',
+                '&:hover': { bgcolor: 'rgba(255,255,255,0.22)' },
+              }}
+            >
+              🌐 {currentLang.label}
+            </Button>
 
-            {['de', 'en', 'fr', 'ar'].map((lang) => (
-              <Button
-                key={lang}
-                size="small"
-                variant={i18n.language === lang ? 'contained' : 'outlined'}
-                onClick={() => i18n.changeLanguage(lang)}
-                sx={{
-                  minWidth: '42px',
-                  width: '42px',
-                  height: '42px',
-                  borderRadius: '10px',
-                  fontWeight: 'bold',
-                  fontSize: '0.85rem',
-                  padding: 0,
-                  bgcolor: i18n.language === lang ? 'rgba(255,255,255,0.25)' : 'transparent',
-                  borderColor: i18n.language === lang ? '#ffffff' : 'rgba(255,255,255,0.3)',
-                  color: '#ffffff',
-                  '&:hover': { bgcolor: 'rgba(255,255,255,0.18)' },
-                }}
-              >
-                {lang.toUpperCase()}
-              </Button>
-            ))}
+            <Menu
+              anchorEl={langMenuAnchor}
+              open={Boolean(langMenuAnchor)}
+              onClose={() => setLangMenuAnchor(null)}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              slotProps={{
+                paper: {
+                  sx: {
+                    mt: 1,
+                    minWidth: 190,
+                    borderRadius: '12px',
+                    bgcolor: isDark ? '#1a1f2e' : '#ffffff',
+                    border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.1)',
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.25)',
+                  }
+                }
+              }}
+            >
+              {langOptions.map((lang) => (
+                <MenuItem
+                  key={lang.code}
+                  selected={i18n.language === lang.code}
+                  onClick={() => {
+                    i18n.changeLanguage(lang.code);
+                    setLangMenuAnchor(null);
+                  }}
+                  sx={{
+                    gap: 1.5,
+                    borderRadius: '8px',
+                    mx: 0.5,
+                    my: 0.25,
+                    fontWeight: i18n.language === lang.code ? 700 : 400,
+                  }}
+                >
+                  <span style={{ fontSize: '1.2rem' }}>{lang.flag}</span>
+                  <span style={{ fontWeight: 700, minWidth: '26px' }}>{lang.label}</span>
+                  <span style={{ flex: 1, opacity: 0.7 }}>— {lang.name}</span>
+                  {i18n.language === lang.code && (
+                    <span style={{ color: isDark ? '#06b6d4' : '#1a5c38', fontWeight: 'bold' }}>✓</span>
+                  )}
+                </MenuItem>
+              ))}
+            </Menu>
           </Box>
         </Toolbar>
       </AppBar>

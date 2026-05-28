@@ -70,5 +70,10 @@
   "admin_edit_settings_button": "Edit Settings",
   "admin_logout_button": "Logout",
   "donation_id": "Donation ID",
-  "donation_qr_code_value": "QR Code Value"
+  "donation_qr_code_value": "QR Code Value",
+  "select_payment_method": "Choose Payment Method",
+  "payment_method_sepa": "Bank Transfer (SEPA)",
+  "payment_method_online": "Pay Online",
+  "payment_method_sepa_desc": "Scan with your banking app",
+  "payment_method_online_desc": "PayPal · Credit Card · Apple Pay"
 }
