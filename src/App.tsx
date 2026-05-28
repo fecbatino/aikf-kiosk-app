@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { AppBar, Toolbar, Typography, Button, Box, Menu, MenuItem } from '@mui/material';
+import React from 'react';
+import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import { Routes, Route, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import DonatePage from './pages/DonatePage';
@@ -14,16 +14,13 @@ function App() {
   const { isAuthenticated, logout } = useAuth();
   const { isDark, toggleTheme } = useThemeToggle();
 
-  const [langMenuAnchor, setLangMenuAnchor] = useState<null | HTMLElement>(null);
+  const languages = ['de', 'en', 'ar', 'fr'];
 
-  const langOptions = [
-    { code: 'de', flag: '🇩🇪', label: 'DE', name: 'Deutsch' },
-    { code: 'en', flag: '🇬🇧', label: 'EN', name: 'English' },
-    { code: 'fr', flag: '🇫🇷', label: 'FR', name: 'Français' },
-    { code: 'ar', flag: '🇸🇦', label: 'AR', name: 'العربية' },
-  ];
-
-  const currentLang = langOptions.find(l => l.code === i18n.language) || langOptions[0];
+  const cycleLanguage = () => {
+    const currentIndex = languages.indexOf(i18n.language);
+    const nextIndex = (currentIndex + 1) % languages.length;
+    i18n.changeLanguage(languages[nextIndex]);
+  };
 
   return (
     <>
@@ -90,15 +87,14 @@ function App() {
               {isDark ? '🕌' : '🌙'}
             </Button>
 
-            {/* Language dropdown */}
+            {/* Language cycle button */}
             <Button
-              onClick={(e) => setLangMenuAnchor(e.currentTarget)}
+              onClick={cycleLanguage}
               size="small"
               sx={{
                 height: '42px',
                 borderRadius: '10px',
                 px: 1.5,
-                gap: 0.75,
                 bgcolor: 'rgba(255,255,255,0.12)',
                 border: '1px solid rgba(255,255,255,0.2)',
                 color: '#ffffff',
@@ -107,53 +103,8 @@ function App() {
                 '&:hover': { bgcolor: 'rgba(255,255,255,0.22)' },
               }}
             >
-              🌐 {currentLang.label}
+              🌐 {i18n.language.toUpperCase()}
             </Button>
-
-            <Menu
-              anchorEl={langMenuAnchor}
-              open={Boolean(langMenuAnchor)}
-              onClose={() => setLangMenuAnchor(null)}
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-              slotProps={{
-                paper: {
-                  sx: {
-                    mt: 1,
-                    minWidth: 190,
-                    borderRadius: '12px',
-                    bgcolor: isDark ? '#1a1f2e' : '#ffffff',
-                    border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.1)',
-                    boxShadow: '0 8px 24px rgba(0,0,0,0.25)',
-                  }
-                }
-              }}
-            >
-              {langOptions.map((lang) => (
-                <MenuItem
-                  key={lang.code}
-                  selected={i18n.language === lang.code}
-                  onClick={() => {
-                    i18n.changeLanguage(lang.code);
-                    setLangMenuAnchor(null);
-                  }}
-                  sx={{
-                    gap: 1.5,
-                    borderRadius: '8px',
-                    mx: 0.5,
-                    my: 0.25,
-                    fontWeight: i18n.language === lang.code ? 700 : 400,
-                  }}
-                >
-                  <span style={{ fontSize: '1.2rem' }}>{lang.flag}</span>
-                  <span style={{ fontWeight: 700, minWidth: '26px' }}>{lang.label}</span>
-                  <span style={{ flex: 1, opacity: 0.7 }}>— {lang.name}</span>
-                  {i18n.language === lang.code && (
-                    <span style={{ color: isDark ? '#06b6d4' : '#1a5c38', fontWeight: 'bold' }}>✓</span>
-                  )}
-                </MenuItem>
-              ))}
-            </Menu>
           </Box>
         </Toolbar>
       </AppBar>
