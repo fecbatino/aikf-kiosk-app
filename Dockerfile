@@ -7,10 +7,10 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY . .
-RUN npm run build -- --base=/
+RUN npm run build -- --base=/ && sed -i "s/__BUILD_ID__/$(date +%s)/" dist/sw.js
 
 # Stage 2: Serve
-FROM nginx:stable-alpine
+FROM nginx:1.30-alpine
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx-kiosk.conf /etc/nginx/conf.d/default.conf

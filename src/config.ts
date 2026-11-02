@@ -27,7 +27,7 @@ const config: AppConfig = {
     iban: import.meta.env.VITE_MOSQUE_SEPA_IBAN || '',
   },
   paymentLink: import.meta.env.VITE_PAYMENT_LINK || 'https://default.example.com/pay',
-  adminPin: import.meta.env.VITE_ADMIN_PIN || '0000', // Standard-PIN für Entwicklung/Fallback
+  adminPin: '',
 };
 
 export default config;
