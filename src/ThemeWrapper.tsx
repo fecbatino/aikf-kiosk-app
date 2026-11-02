@@ -8,13 +8,14 @@ import rtlPlugin from 'stylis-plugin-rtl';
 import { useTranslation } from 'react-i18next';
 const rtl = createCache({ key: 'muirtl', stylisPlugins: [prefixer, rtlPlugin] });
 const ltr = createCache({ key: 'muiltr' });
-export const ThemeToggleContext = createContext({ isDark: false, toggleTheme: () => {} });
+export const ThemeToggleContext = createContext({ isDark: false, toggleTheme: () => {}, resetTheme: () => {} });
 export const useThemeToggle = () => useContext(ThemeToggleContext);
 export default function ThemeWrapper({ children }: { children: React.ReactNode }) {
   const { i18n } = useTranslation();
   const [isDark, setIsDark] = useState(() => localStorage.getItem('aikf-theme') === 'dark');
   const isRtl = i18n.language === 'ar';
   function toggleTheme() { setIsDark(previous => { localStorage.setItem('aikf-theme', !previous ? 'dark' : 'light'); return !previous; }); }
+  const resetTheme = React.useCallback(() => { localStorage.removeItem('aikf-theme'); setIsDark(false); }, []);
   React.useEffect(() => {
     document.documentElement.dir = isRtl ? 'rtl' : 'ltr'; document.documentElement.lang = i18n.language;
     document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
@@ -40,5 +41,5 @@ export default function ThemeWrapper({ children }: { children: React.ReactNode }
       MuiAlert: { styleOverrides: { root: { borderRadius: 12, fontSize: '.85rem', lineHeight: 1.65 } } },
     },
   }), [isDark, isRtl]);
-  return <ThemeToggleContext.Provider value={{ isDark, toggleTheme }}><CacheProvider value={isRtl ? rtl : ltr}><ThemeProvider theme={theme}><CssBaseline />{children}</ThemeProvider></CacheProvider></ThemeToggleContext.Provider>;
+  return <ThemeToggleContext.Provider value={{ isDark, toggleTheme, resetTheme }}><CacheProvider value={isRtl ? rtl : ltr}><ThemeProvider theme={theme}><CssBaseline />{children}</ThemeProvider></CacheProvider></ThemeToggleContext.Provider>;
 }

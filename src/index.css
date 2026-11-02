@@ -61,7 +61,7 @@ button, input { font: inherit; }
 .amount-grid .MuiButton-root { min-width: 0; min-height: 70px; padding: 12px 0; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); background: var(--paper); display: flex; align-items: baseline; justify-content: center; gap: 4px; font-variant-numeric: tabular-nums; }
 .amount-number { order: 1; font-family: 'Manrope Variable', sans-serif; font-size: 25px; font-weight: 650; letter-spacing: -.04em; }
 .amount-currency { order: 2; font-size: 15px; font-weight: 500; }
-.amount-grid .MuiButton-root:hover { border-color: var(--green); background: var(--soft); }
+@media (hover: hover) { .amount-grid .MuiButton-root:hover { border-color: var(--green); background: var(--soft); } }
 .amount-grid .MuiButton-root[aria-pressed="true"] { background: var(--green); border-color: var(--green); color: var(--paper); box-shadow: 0 5px 14px #145c4615; }
 .custom-amount .MuiOutlinedInput-root { height: 55px; }
 .custom-amount .MuiInputBase-input { font-size: 16px; font-weight: 500; }
@@ -72,7 +72,7 @@ button, input { font: inherit; }
 .category-grid .category { position: relative; min-width: 0; min-height: 85px; padding: 15px 5px 11px; border: 1px solid var(--line); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px; color: var(--muted); }
 .category-icon { display: flex; color: var(--muted); }
 .category-label { font-size: 12px; line-height: 1.4; font-weight: 500; }
-.category-grid .category:hover { background: var(--soft); border-color: var(--green); }
+@media (hover: hover) { .category-grid .category:hover { background: var(--soft); border-color: var(--green); } }
 .category-grid .category.selected { border-color: #74a28b; background: var(--soft); color: var(--green); }
 .selected .category-icon { color: var(--green); }
 .selection-check { position: absolute; top: 8px; inset-inline-end: 8px; width: 14px; height: 14px; display: grid; place-items: center; border-radius: 50%; color: var(--paper); }
@@ -118,7 +118,7 @@ button, input { font: inherit; }
 .site-footer { max-width: 1248px; margin: 0 auto; padding: 16px 24px 22px; display: flex; justify-content: space-between; align-items: center; gap: 14px; font-size: 11px; color: var(--muted); }
 .site-footer nav { display: flex; align-items: center; gap: 24px; }
 .site-footer a { text-decoration: none; min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
-.site-footer a:hover { color: var(--green); text-decoration: underline; }
+@media (hover: hover) { .site-footer a:hover { color: var(--green); text-decoration: underline; } }
 .admin-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 8px 24px; background: var(--soft); }
 .skip-link { position: fixed; top: -70px; inset-inline-start: 20px; z-index: 999; padding: 12px; background: var(--paper); border-radius: 8px; }
 .skip-link:focus { top: 10px; }
@@ -287,4 +287,43 @@ html[dir="rtl"] .MuiButton-endIcon svg { transform: rotate(180deg); }
   .donation-card .primary-action, .donation-card .primary-action.Mui-disabled { opacity: 1; box-shadow: 0 -6px 18px #0000001f; }
   .donation-card .primary-action.Mui-disabled { background: var(--paper); }
   .step-actions { background: var(--paper); padding-bottom: 4px; }
+}
+
+/* Touch kiosk: no pull-to-refresh, pinch or double-tap zoom, text selection or
+   long-press callouts on the donation screens. Imprint and privacy stay normal. */
+html:has(.kiosk-content), html:has(.kiosk-content) body { overscroll-behavior: none; }
+html:has(.kiosk-content) { touch-action: pan-x pan-y; }
+html:has(.kiosk-content) body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+html:has(.kiosk-content) :is(input, textarea) { -webkit-user-select: text; user-select: text; }
+
+/* Tablets and terminals in landscape: the payment step has to fit one screen,
+   QR code and confirm button included. */
+@media (min-width: 900px) and (orientation: landscape) {
+  .kiosk-content { padding-top: 24px; }
+  .payment-options { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .payment-options .payment-option { min-height: 0; padding: 12px; gap: 10px; align-items: flex-start; }
+  /* Icons cost a line of wrapping per tile in three columns. */
+  .payment-options .payment-option .method-icon { display: none; }
+  .step-list { padding-bottom: 14px; }
+  /* The panel below explains the selected method, so its tile only needs the name. */
+  .payment-options .payment-option.selected .method-text > span { display: none; }
+  /* Unavailable methods already say so on their tile. */
+  .payment-availability { display: none; }
+  .transfer-panel { margin-top: 16px; padding: 16px; }
+  .bank-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 18px; row-gap: 2px; }
+  .bank-details .bank-instruction, .bank-details small { grid-column: 1 / -1; }
+  .bank-field { margin-bottom: 4px; }
+  .step-actions { margin-top: 16px; }
+}
+/* Back and confirm stay on screen on every tablet; phones have their own rule above. */
+@media (min-width: 601px) {
+  .step-actions { position: sticky; bottom: 0; z-index: 2; background: var(--paper); padding-bottom: 12px; }
+}
+/* Below 1025px the summary sits above the card and pushes the QR code off a
+   768px-high screen; the amount is already in the QR code and bank details. */
+@media (min-width: 900px) and (max-width: 1024px) and (orientation: landscape) {
+  .donation-layout:has(.payment-options) > .impact-panel { display: none; }
+}
+@media (orientation: landscape) and (max-height: 800px) {
+  .qr-frame svg { width: 220px; height: 220px; }
 }
