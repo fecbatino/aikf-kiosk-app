@@ -43,7 +43,7 @@ function App() {
         </Routes>
       </React.Suspense>
     </main>
-    <footer className="site-footer"><span>{t('footer_copyright')}</span><nav aria-label={t('footer_links')}><Link to="/imprint">{t('footer_imprint')}</Link><Link to="/privacy">{t('footer_privacy')}</Link><Link className="admin-link" to="/admin"><Icon name="settings" size={14} />{t('admin_area')}</Link></nav></footer>
+    <footer className="site-footer"><span>{t('footer_copyright')}</span><nav aria-label={t('footer_links')}><Link to="/imprint">{t('footer_imprint')}</Link><Link to="/privacy">{t('footer_privacy')}</Link></nav></footer>
   </>;
 }
 export default App;

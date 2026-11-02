@@ -256,3 +256,35 @@ html[dir="rtl"] .MuiButton-endIcon svg { transform: rotate(180deg); }
 .bank-field > code { font-size: 13px; line-height: 1.7; letter-spacing: .015em; }
 .bank-reference-text { overflow-wrap: anywhere; text-align: start; }
 @media (max-width: 600px) { .bank-details .bank-instruction { font-size: 14px; } .bank-field > span { font-size: 11px; } .bank-field > strong, .bank-field > code { font-size: 13px; } }
+
+/* Kiosk readability: donors read from about 60 cm while standing, so no text
+   below 14px and no control below 48px. Kept last so it wins over the
+   breakpoint rules above. */
+.brand small, .brand-association, .eyebrow, .summary-block .eyebrow, .impact-intro > .eyebrow,
+.summary-category, .impact-trust, .impact-panel .impact-copy, .step-list li, .step-number,
+.donation-card .step-description, .donation-card .section-label, .category-label,
+.secure-footer, .anonymous-choice p, .anonymous-choice .MuiFormControlLabel-label, .privacy-note,
+.step-actions .MuiButton-root, .method-text > span, .payment-availability, .bank-details,
+.bank-details strong, .bank-details code, .bank-details small, .bank-field > span,
+.bank-field > strong, .bank-field > code, .site-footer, .header-actions .MuiButton-root,
+.language-control .language-select { font-size: 14px !important; }
+.payment-availability { line-height: 1.6 !important; }
+.step-number { width: 30px; height: 30px; }
+.header-actions .MuiButton-root, .header-actions .theme-button { min-height: 48px; }
+.header-actions .theme-button { width: 48px; min-width: 48px; }
+.language-control .language-select { height: 48px; }
+.site-footer a { min-height: 48px; }
+@media (max-width: 600px) {
+  /* Only the current step keeps a visible label; the others stay readable for screen readers. */
+  .step-list li { font-size: 14px !important; }
+  .step-list li, .step-list li:last-child { flex: 0 0 auto; }
+  .step-list li[aria-current="step"] { flex: 1; }
+  .step-list li:not([aria-current="step"]) > span:last-child { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .header-actions .reset-button { min-width: 48px; font-size: 0 !important; }
+  .language-control .language-select { min-width: 96px; }
+  /* Keep the next step reachable without scrolling on phones. */
+  .donation-card .primary-action, .step-actions { position: sticky; bottom: 12px; z-index: 2; }
+  .donation-card .primary-action, .donation-card .primary-action.Mui-disabled { opacity: 1; box-shadow: 0 -6px 18px #0000001f; }
+  .donation-card .primary-action.Mui-disabled { background: var(--paper); }
+  .step-actions { background: var(--paper); padding-bottom: 4px; }
+}
