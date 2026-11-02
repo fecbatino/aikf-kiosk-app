@@ -141,7 +141,7 @@ export default function DonatePage() {
 
   if (done) return <Paper className="thank-you" elevation={0}>
     <div className="success-mark"><Icon name={done === 'paid' ? 'check' : 'heart'} size={40} /></div>
-    <Typography component="h1" variant="h3" ref={heading} tabIndex={-1}>{t('thank_you_title')}</Typography>
+    <Typography component="h1" variant="h3" ref={heading} tabIndex={-1}>{t(done === 'pending' ? 'thank_you_title_pending' : 'thank_you_title')}</Typography>
     <Typography className="thank-you-amount">{money(amount || 0)}</Typography>
     <Typography color="text.secondary">{t(done === 'paid' ? 'payment_confirmed' : done === 'processing' ? 'payment_processing' : 'transfer_pending')}</Typography>
     <Button variant="contained" onClick={reset} sx={{ mt: 4 }}>{t('new_donation')}</Button>
