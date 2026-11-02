@@ -1,0 +1,25 @@
+# Conventions — AIKF Donation Kiosk
+
+## Stack-Invarianten
+
+- React + TypeScript + Vite, UI über MUI/Emotion (`@mui/material`), Icons `lucide-react`.
+- i18n ausschließlich über `i18next` (`src/i18n.ts`), keine hartkodierten UI-Strings.
+- Offline-Speicher über `dexie` (IndexedDB), nie `localStorage` für Spendendaten.
+- Build ist `tsc && vite build` — TypeScript-Fehler brechen den Build, kein `any` als Ausweg.
+
+## Typisierung
+
+- API-Antworten in `src/api.ts` als `interface` deklariert; neue Endpunkte dort typisieren, nicht im Component-Layer.
+- `request<T>()` ist der einzige HTTP-Pfad (30 s Timeout, `cache: "no-store"`, Fehler als `Error(message)`).
+
+## Tests (Mindestanforderung)
+
+- `npm test` (= `vitest run`) muss grün sein; Tests liegen in `src/__tests__/`.
+- Pflicht bei Änderungen an Geldlogik (`src/utils/payment.ts`), API-Client (`src/api.ts`), Auth-Kontext: mindestens ein Test, der den geänderten Pfad ausführt.
+- Kein Merge ohne grünen Lauf von `hetzner-deploy.yml` und `android-apk.yml`.
+
+## Sicherheit
+
+- Keine Secrets im Bundle: nur `VITE_*` (SEPA-IBAN/BIC, Payment-Link). `adminPin` bleibt leer, Auth läuft über das Backend.
+- CSP in `nginx-kiosk.conf` mitpflegen, sobald ein externer Host dazukommt (aktuell nur `checkout.stripe.com` in `form-action`).
+- Kiosk-Token gehört in `localStorage['aikf-kiosk-pair']`, nie in die URL.
