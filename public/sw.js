@@ -13,7 +13,7 @@ self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin || event.request.method !== 'GET' || url.pathname.startsWith('/api/')) return;
   if (event.request.mode === 'navigate') {
-    event.respondWith(fetch(event.request).catch(async () => await caches.match('/index.html') || await caches.match('/offline.html') || Response.error()));
+    event.respondWith(fetch(event.request).catch(async () => await caches.match('/offline.html') || await caches.match('/index.html') || Response.error()));
     return;
   }
   if (!url.pathname.startsWith('/assets/')) return;
