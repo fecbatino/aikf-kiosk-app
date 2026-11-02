@@ -21,6 +21,11 @@ window.addEventListener('vite:preloadError', event => {
   window.location.reload();
 });
 
+// Long-press menus on the kiosk screens lead away from the donation flow; inputs keep theirs.
+window.addEventListener('contextmenu', event => {
+  if (document.querySelector('.kiosk-content') && !(event.target as Element).closest('input, textarea')) event.preventDefault();
+});
+
 // Service Worker für PWA registrieren
 if ("serviceWorker" in navigator && import.meta.env.BASE_URL === "/") {
   window.addEventListener("load", () => {

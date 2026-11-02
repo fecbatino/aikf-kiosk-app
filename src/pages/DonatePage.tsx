@@ -7,6 +7,7 @@ import { donationsApi, paymentsApi, PaymentConfig } from '../api';
 import config from '../config';
 import Icon from '../components/Icon';
 import CommunityIllustration from '../components/CommunityIllustration';
+import { useThemeToggle } from '../ThemeWrapper';
 import { donationReference, giroCode, parseAmount, PaymentAttempt, restoredAttempt, validIban } from '../utils/payment';
 
 const categories = [ ['general', 'mosque'], ['education', 'book'], ['mosque_purchase', 'bank'], ['ramadan', 'moon'] ];
@@ -14,6 +15,7 @@ export default function DonatePage() {
   const { t, i18n } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
+  const { isDark, resetTheme } = useThemeToggle();
   const initial = useRef(restoredAttempt());
   const [step, setStep] = useState(initial.current ? 2 : 0);
   const [value, setValue] = useState(String(initial.current?.amount || ''));
@@ -48,8 +50,10 @@ export default function DonatePage() {
     setAttempt(null); setValue(''); setCategory('general'); setName(''); setEmail(''); setAnonymous(true);
     setStep(0); setMethod('sepa'); setDone(null); setError(''); setStatusError(false); setIdle(180); setStatus('pending');
     requestKey.current = crypto.randomUUID();
+    // The next donor starts in German and the light theme, whatever the last one picked.
+    void i18n.changeLanguage('de'); resetTheme();
     navigate('/', { replace: true });
-  }, [navigate]);
+  }, [navigate, i18n, resetTheme]);
 
   const cancel = useCallback(async () => {
     if (locked.current) return;
@@ -84,7 +88,13 @@ export default function DonatePage() {
     const timer = window.setInterval(() => setIdle(x => Math.max(0, x - 1)), 1000);
     return () => { clearInterval(timer); window.removeEventListener('pointerdown', activity); window.removeEventListener('keydown', activity); };
   }, []);
-  useEffect(() => { if (idle === 0 && (step > 0 || value) && !busy && !done) void cancel(); }, [idle, step, value, busy, done, cancel]);
+  // Nothing entered: no warning, just quietly back to the defaults once the timer runs out.
+  const active = step > 0 || !!value;
+  useEffect(() => {
+    if (idle !== 0 || busy || done) return;
+    if (active) void cancel();
+    else if (i18n.language !== 'de' || isDark) reset();
+  }, [idle, active, busy, done, cancel, reset, i18n.language, isDark]);
   useEffect(() => {
     if (!done) return;
     setCountdown(15);
@@ -172,7 +182,7 @@ export default function DonatePage() {
       <Typography variant="h4" component="h2" ref={heading} tabIndex={-1} className="step-heading">{t(step === 0 ? 'step_amount_title' : step === 1 ? 'step_donor_title' : 'select_payment_method')}</Typography>
       <Typography color="text.secondary" className="step-description">{t(step === 0 ? 'amount_description' : step === 1 ? 'donor_description' : 'payment_description')}</Typography>
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-      {idle < 30 && <Alert severity="warning" action={<Button onClick={() => setIdle(180)}>{t('continue_session')}</Button>}>{t('idle_warning', { count: idle })}</Alert>}
+      {active && idle < 30 && <Alert severity="warning" action={<Button onClick={() => setIdle(180)}>{t('continue_session')}</Button>}>{t('idle_warning', { count: idle })}</Alert>}
       {step === 0 && <>
         <div className="amount-grid" role="group" aria-label={t('donation_amount')}>
           {[5, 10, 20, 50, 100].map(number => <Button key={number} aria-pressed={value === String(number)} variant={value === String(number) ? 'contained' : 'outlined'} onClick={() => changeAmount(String(number))}><span className="amount-currency">€</span><span className="amount-number">{number}</span></Button>)}
@@ -206,7 +216,7 @@ export default function DonatePage() {
           </div>
           {!onlineReady && !terminalReady && paymentConfig && <Typography className="payment-availability" color="text.secondary">{t('payments_setup_note')}</Typography>}
           {method === 'sepa' && bankReady && amount && <div className="transfer-panel">
-            <div className="qr-frame"><QRCodeSVG value={giroCode(bank, amount, reference)} size={176} marginSize={4} level="M" title={t('bank_qr_title')} /></div>
+            <div className="qr-frame"><QRCodeSVG value={giroCode(bank, amount, reference)} size={240} marginSize={4} level="M" title={t('bank_qr_title')} /></div>
             <div className="bank-details">
               <strong className="bank-instruction">{t('scan_banking')}</strong>
               <div className="bank-field"><span>{t('bank_recipient')}</span><strong>{bank.name}</strong></div>
