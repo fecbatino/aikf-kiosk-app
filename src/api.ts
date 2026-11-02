@@ -17,9 +17,9 @@ async function request<T>(endpoint: string, options: ApiOptions = {}): Promise<T
     "Content-Type": "application/json",
   };
 
-  if (options.idempotencyKey) headers['Idempotency-Key'] = options.idempotencyKey;
-  const kioskToken = localStorage.getItem('aikf-kiosk-pair');
-  if (kioskToken) headers['X-Kiosk-Token'] = kioskToken;
+  if (options.idempotencyKey) headers["Idempotency-Key"] = options.idempotencyKey;
+  const kioskToken = localStorage.getItem("aikf-kiosk-pair");
+  if (kioskToken) headers["X-Kiosk-Token"] = kioskToken;
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
@@ -72,19 +72,21 @@ export interface CreateDonationInput {
   paymentMethod: string;
 }
 
+export interface DonationListParams {
+  sort?: string;
+  status?: string;
+  category?: string;
+  startDate?: string;
+  endDate?: string;
+  page?: number;
+  limit?: number;
+}
+
 export const donationsApi = {
   create: (input: CreateDonationInput, idempotencyKey: string) =>
     request<{ id: string; status: string }>("/donations", { method: "POST", body: input, idempotencyKey }),
 
-  list: (params?: {
-    sort?: string;
-    status?: string;
-    category?: string;
-    startDate?: string;
-    endDate?: string;
-    page?: number;
-    limit?: number;
-  }, token?: string) => {
+  list: (params?: DonationListParams, token?: string) => {
     const searchParams = new URLSearchParams();
     if (params?.sort) searchParams.set("sort", params.sort);
     if (params?.status) searchParams.set("status", params.status);
@@ -100,16 +102,27 @@ export const donationsApi = {
   getById: (id: string, token?: string) =>
     request<Donation>(`/donations/${id}`, { token }),
 
-  reconcile: (id: string, reference: string, token: string) => request<{ status: string }>(`/donations/${id}/reconcile`, { method: 'PATCH', body: { reference }, token }),
+  reconcile: (id: string, reference: string, token: string) =>
+    request<{ status: string }>(`/donations/${id}/reconcile`, { method: "PATCH", body: { reference }, token }),
 
   delete: (id: string, token?: string) =>
     request<{ message: string }>(`/donations/${id}`, { method: "DELETE", token }),
 
   receipt: async (id: string, token: string) => {
-    const result = await fetch(`${API_BASE}/donations/${id}/receipt`, { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' });
-    if (!result.ok) throw new Error('RECEIPT_UNAVAILABLE');
+    const headers: Record<string, string> = { Authorization: `Bearer ${token}` };
+    const kioskToken = localStorage.getItem("aikf-kiosk-pair");
+    if (kioskToken) headers["X-Kiosk-Token"] = kioskToken;
+    const result = await fetch(`${API_BASE}/donations/${id}/receipt`, {
+      headers,
+      signal: AbortSignal.timeout(30000),
+      cache: "no-store",
+    });
+    if (!result.ok) throw new Error("RECEIPT_UNAVAILABLE");
     const url = URL.createObjectURL(await result.blob());
-    const link = document.createElement('a'); link.href = url; link.download = `spende-${id}.pdf`; link.click();
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `spende-${id}.pdf`;
+    link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   },
 };
@@ -142,7 +155,7 @@ export const adminApi = {
     request<{ admin: { id: string; email: string }; mustChangePassword?: boolean }>("/admin/me", { token }),
 
   changePassword: (currentPassword: string, newPassword: string, token: string) =>
-    request<{ changed: boolean }>('/admin/password', { method: 'POST', body: { currentPassword, newPassword }, token }),
+    request<{ changed: boolean }>("/admin/password", { method: "POST", body: { currentPassword, newPassword }, token }),
 
   stats: (token: string) =>
     request<AdminStats>("/admin/stats", { token }),
@@ -152,14 +165,21 @@ export const adminApi = {
 export interface PaymentConfig { online: boolean; terminal: boolean; paired: boolean; testMode: boolean; methods: string[] }
 export interface PaymentSession { donationId: string; token: string; url?: string; expiresAt?: number }
 export const paymentsApi = {
-  config: () => request<PaymentConfig>('/stripe/config'),
-  checkout: (input: Omit<CreateDonationInput, 'paymentMethod'> & { locale: string }, idempotencyKey: string) =>
-    request<PaymentSession>('/stripe/checkout', { method: 'POST', body: input, idempotencyKey }),
-  terminal: (input: Omit<CreateDonationInput, 'paymentMethod'>, idempotencyKey: string) =>
-    request<PaymentSession>('/stripe/terminal', { method: 'POST', body: input, idempotencyKey }),
-  status: (id: string, token: string) => request<{ status: string; amount: number; category: string; attemptFailed?: boolean; processing?: boolean }>(`/stripe/status/${id}`, { token }),
-  cancel: (id: string, token: string) => request<{ status: string; processing?: boolean }>(`/stripe/cancel/${id}`, { method: 'POST', token }),
-  pair: (token: string) => request<{ token: string }>('/stripe/pair', { method: 'POST', token }),
+  config: () => request<PaymentConfig>("/stripe/config"),
+  prepare: (input: Omit<CreateDonationInput, "paymentMethod"> & { method: "online" | "terminal" }, idempotencyKey: string) =>
+    request<PaymentSession>("/stripe/prepare", { method: "POST", body: input, idempotencyKey }),
+  recover: (id: string, token: string) =>
+    request<PaymentSession>(`/stripe/recover/${id}`, { method: "POST", token }),
+  checkout: (input: Omit<CreateDonationInput, "paymentMethod"> & { locale: string }, idempotencyKey: string) =>
+    request<PaymentSession>("/stripe/checkout", { method: "POST", body: input, idempotencyKey }),
+  terminal: (input: Omit<CreateDonationInput, "paymentMethod">, idempotencyKey: string) =>
+    request<PaymentSession>("/stripe/terminal", { method: "POST", body: input, idempotencyKey }),
+  status: (id: string, token: string) =>
+    request<{ status: string; amount: number; category: string; attemptFailed?: boolean; processing?: boolean; url?: string }>(`/stripe/status/${id}`, { token }),
+  cancel: (id: string, token: string) =>
+    request<{ status: string; processing?: boolean }>(`/stripe/cancel/${id}`, { method: "POST", token }),
+  pair: (token: string) =>
+    request<{ token: string }>("/stripe/pair", { method: "POST", token }),
 };
 
 // --- Token Management ---

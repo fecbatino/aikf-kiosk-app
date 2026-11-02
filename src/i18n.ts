@@ -6,12 +6,13 @@ import translationEN from './locales/en/translation.json';
 import translationDE from './locales/de/translation.json';
 import translationFR from './locales/fr/translation.json';
 import translationAR from './locales/ar/translation.json';
+import legal from './locales/legal.json';
 
 const resources = {
-  en: { translation: translationEN },
-  de: { translation: translationDE },
-  fr: { translation: translationFR },
-  ar: { translation: translationAR },
+  en: { translation: translationEN, legal: { content: legal.en } },
+  de: { translation: translationDE, legal: { content: legal.de } },
+  fr: { translation: translationFR, legal: { content: legal.fr } },
+  ar: { translation: translationAR, legal: { content: legal.ar } },
 };
 
 i18n

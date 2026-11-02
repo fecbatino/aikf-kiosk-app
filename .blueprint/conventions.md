@@ -4,7 +4,7 @@
 
 - React + TypeScript + Vite, UI über MUI/Emotion (`@mui/material`), Icons `lucide-react`.
 - i18n ausschließlich über `i18next` (`src/i18n.ts`), keine hartkodierten UI-Strings.
-- Offline-Speicher über `dexie` (IndexedDB), nie `localStorage` für Spendendaten.
+- Keine Spendendaten oder Admin-Tokens in `localStorage`; Zahlungsstatus und Admin-JWT liegen ausschließlich in `sessionStorage`.
 - Build ist `tsc && vite build` — TypeScript-Fehler brechen den Build, kein `any` als Ausweg.
 
 ## Typisierung
@@ -20,6 +20,6 @@
 
 ## Sicherheit
 
-- Keine Secrets im Bundle: nur `VITE_*` (SEPA-IBAN/BIC, Payment-Link). `adminPin` bleibt leer, Auth läuft über das Backend.
+- Keine Secrets im Bundle: nur öffentliche Empfängerdaten (`VITE_SEPA_*`, `VITE_MOSQUE_SEPA_*`). Auth läuft ausschließlich über das Backend.
 - CSP in `nginx-kiosk.conf` mitpflegen, sobald ein externer Host dazukommt (aktuell nur `checkout.stripe.com` in `form-action`).
 - Kiosk-Token gehört in `localStorage['aikf-kiosk-pair']`, nie in die URL.

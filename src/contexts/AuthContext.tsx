@@ -49,12 +49,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const logout = () => {
+  const logout = useCallback(() => {
     tokenStorage.remove();
     setIsAuthenticated(false);
     setMustChangePassword(false);
     setAdminEmail(null);
-  };
+  }, []);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    let timer: ReturnType<typeof setTimeout>;
+    const activity = () => { clearTimeout(timer); timer = setTimeout(logout, 5 * 60 * 1000); };
+    activity();
+    window.addEventListener('pointerdown', activity); window.addEventListener('keydown', activity);
+    return () => { clearTimeout(timer); window.removeEventListener('pointerdown', activity); window.removeEventListener('keydown', activity); };
+  }, [isAuthenticated, logout]);
 
   const getToken = useCallback((): string | null => tokenStorage.get(), []);
 

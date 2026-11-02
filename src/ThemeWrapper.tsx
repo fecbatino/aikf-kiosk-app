@@ -37,7 +37,7 @@ export default function ThemeWrapper({ children }: { children: React.ReactNode }
       MuiButton: { defaultProps: { disableElevation: true }, styleOverrides: { root: { minHeight: 48, borderRadius: 12, padding: '12px 20px', fontSize: '0.95rem', transition: 'background-color .18s, border-color .18s, box-shadow .18s' } } },
       MuiPaper: { styleOverrides: { root: { backgroundImage: 'none' } } },
       MuiOutlinedInput: { styleOverrides: { root: { borderRadius: 12 }, notchedOutline: { borderColor: isDark ? '#3b5145' : '#d9e1db' } } },
-      MuiFormHelperText: { styleOverrides: { root: { fontSize: '.75rem', lineHeight: 1.6, marginTop: 7, marginInlineStart: 0 } } },
+      MuiFormHelperText: { styleOverrides: { root: { fontSize: '.875rem', lineHeight: 1.6, marginTop: 7, marginInlineStart: 0 } } },
       MuiAlert: { styleOverrides: { root: { borderRadius: 12, fontSize: '.85rem', lineHeight: 1.65 } } },
     },
   }), [isDark, isRtl]);

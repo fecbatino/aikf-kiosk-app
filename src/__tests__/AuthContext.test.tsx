@@ -30,3 +30,17 @@ describe('administrator authentication', () => {
     expect(result.current.isAuthenticated).toBe(false);
   });
 });
+
+it('ends the administrator session after five minutes without interaction', async () => {
+  vi.useFakeTimers();
+  try {
+    vi.mocked(adminApi.login).mockResolvedValue({ token: 'test-token', admin: { id: '1', email: 'admin@example.invalid' } });
+    const { result } = renderHook(useAuth, { wrapper: AuthProvider });
+    await act(async () => { await result.current.login('admin@example.invalid', 'fixture'); });
+    act(() => { vi.advanceTimersByTime(4 * 60 * 1000); window.dispatchEvent(new Event('pointerdown')); });
+    act(() => { vi.advanceTimersByTime(4 * 60 * 1000); });
+    expect(result.current.isAuthenticated).toBe(true);
+    act(() => { vi.advanceTimersByTime(60 * 1000); });
+    expect(result.current.isAuthenticated).toBe(false); expect(tokenStorage.remove).toHaveBeenCalled();
+  } finally { vi.useRealTimers(); }
+});

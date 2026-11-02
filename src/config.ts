@@ -1,18 +1,12 @@
-// src/config.ts
+export interface BankAccountConfig {
+  bic: string;
+  name: string;
+  iban: string;
+}
 
-interface AppConfig {
-  sepa: {
-    bic: string;
-    name: string;
-    iban: string;
-  };
-  mosqueSepa: {
-    bic: string;
-    name: string;
-    iban: string;
-  };
-  paymentLink: string;
-  adminPin: string; // Admin-PIN hinzugefügt
+export interface AppConfig {
+  sepa: BankAccountConfig;
+  mosqueSepa: BankAccountConfig;
 }
 
 const config: AppConfig = {
@@ -26,8 +20,6 @@ const config: AppConfig = {
     name: import.meta.env.VITE_MOSQUE_SEPA_NAME || 'Afrikanischen Islamischen Kultur Franken',
     iban: import.meta.env.VITE_MOSQUE_SEPA_IBAN || '',
   },
-  paymentLink: import.meta.env.VITE_PAYMENT_LINK || 'https://default.example.com/pay',
-  adminPin: '',
 };
 
 export default config;

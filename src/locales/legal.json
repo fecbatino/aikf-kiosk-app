@@ -1,0 +1,134 @@
+{
+  "de": {
+    "privacy": [
+      [
+        "Datenschutz auf einen Blick",
+        "Hier erfahren Sie, wie personenbezogene Daten bei der Nutzung des Spendenkiosks verarbeitet werden."
+      ],
+      [
+        "Verantwortlicher und Kontakt",
+        "AIKF e.V. Nürnberg, Al Rahama Moschee, Wölckernstraße 78, 90459 Nürnberg, Deutschland. Kontakt: naikf2006@gmail.com."
+      ],
+      [
+        "Welche Daten werden verarbeitet?",
+        "Freiwillige Angaben im Formular umfassen Name und E-Mail-Adresse. Bei anonymen Spenden erfasst das Kioskformular keine Kontaktangaben. Beim Zugriff können technische Daten wie Browsertyp und Zugriffszeit verarbeitet werden."
+      ],
+      [
+        "Zweck und Zahlungsanbieter",
+        "Angaben zur Spende dienen ihrer Abwicklung, dem Bankabgleich und der Erstellung einer Zahlungsbestätigung. Bei Online- und Terminalzahlungen verarbeitet Stripe die erforderlichen Zahlungsdaten; bei einer Überweisung Ihre Bank. Der Kiosk speichert keine vollständigen Kartennummern oder PINs. Eine Zahlungsbestätigung ist keine steuerliche Zuwendungsbestätigung."
+      ],
+      [
+        "Speicherdauer und Ihre Rechte",
+        "Spendenbezogene Daten werden entsprechend den geltenden Aufbewahrungspflichten gespeichert. Für Auskunft, Berichtigung oder Löschung Ihrer personenbezogenen Daten wenden Sie sich an naikf2006@gmail.com. Eine Löschung kann durch Aufbewahrungspflichten eingeschränkt sein."
+      ],
+      [
+        "Verschlüsselte Verbindung",
+        "Die Website verwendet HTTPS zum Schutz der Datenübertragung. Banken und Zahlungsanbieter verarbeiten Zahlungsdaten in ihren eigenen Systemen."
+      ]
+    ],
+    "represented": "Vertreten durch",
+    "board": "Vorstand: Baba Issaka Saana (1. Vorsitzender)",
+    "contact": "Kontakt",
+    "responsible": "Verantwortlich für den Inhalt",
+    "country": "Deutschland"
+  },
+  "en": {
+    "privacy": [
+      [
+        "Privacy at a glance",
+        "This information explains how personal data is processed when you use the donation kiosk."
+      ],
+      [
+        "Controller and contact",
+        "AIKF e.V. Nürnberg, Al Rahama Mosque, Wölckernstraße 78, 90459 Nürnberg, Germany. Contact: naikf2006@gmail.com."
+      ],
+      [
+        "What data is processed?",
+        "Optional form details include your name and email address. For anonymous donations, the kiosk form does not collect contact details. Technical data such as browser type and access time may be processed when you visit."
+      ],
+      [
+        "Purpose and payment providers",
+        "Donation information is used to process the donation, reconcile bank transfers and prepare payment confirmations. Stripe processes the necessary payment data for online and terminal payments; your bank processes bank transfers. The kiosk does not store full card numbers or PINs. A payment confirmation is not a tax donation certificate."
+      ],
+      [
+        "Retention and your rights",
+        "Donation records are stored according to applicable retention obligations. Contact naikf2006@gmail.com to request access, correction or deletion of your personal data. Retention obligations may limit deletion."
+      ],
+      [
+        "Encrypted connection",
+        "This website uses HTTPS to protect data in transit. Banks and payment providers process payment information in their own systems."
+      ]
+    ],
+    "represented": "Represented by",
+    "board": "Board: Baba Issaka Saana (chairperson)",
+    "contact": "Contact",
+    "responsible": "Responsible for the content",
+    "country": "Germany"
+  },
+  "fr": {
+    "privacy": [
+      [
+        "La confidentialité en bref",
+        "Ces informations expliquent comment les données personnelles sont traitées lorsque vous utilisez le kiosque de dons."
+      ],
+      [
+        "Responsable et contact",
+        "AIKF e.V. Nürnberg, mosquée Al Rahama, Wölckernstraße 78, 90459 Nürnberg, Allemagne. Contact : naikf2006@gmail.com."
+      ],
+      [
+        "Quelles données sont traitées ?",
+        "Les informations facultatives du formulaire comprennent le nom et l’adresse e-mail. Pour les dons anonymes, le formulaire ne recueille aucune coordonnée. Des données techniques, comme le type de navigateur et l’heure d’accès, peuvent être traitées lors de la visite."
+      ],
+      [
+        "Finalité et prestataires de paiement",
+        "Les informations servent au traitement du don, au rapprochement bancaire et à l’établissement d’une confirmation de paiement. Stripe traite les données nécessaires aux paiements en ligne et sur terminal ; votre banque traite les virements. Le kiosque ne conserve ni numéro de carte complet ni code PIN. Une confirmation de paiement n’est pas un reçu fiscal de don."
+      ],
+      [
+        "Conservation et vos droits",
+        "Les données relatives aux dons sont conservées conformément aux obligations applicables. Pour demander l’accès, la rectification ou l’effacement de vos données, contactez naikf2006@gmail.com. Les obligations de conservation peuvent limiter l’effacement."
+      ],
+      [
+        "Connexion chiffrée",
+        "Ce site utilise HTTPS pour protéger la transmission des données. Les banques et prestataires de paiement traitent les données de paiement dans leurs propres systèmes."
+      ]
+    ],
+    "represented": "Représentée par",
+    "board": "Conseil : Baba Issaka Saana (président)",
+    "contact": "Contact",
+    "responsible": "Responsable du contenu",
+    "country": "Allemagne"
+  },
+  "ar": {
+    "privacy": [
+      [
+        "الخصوصية باختصار",
+        "توضح هذه المعلومات كيفية معالجة البيانات الشخصية عند استخدام كشك التبرعات."
+      ],
+      [
+        "الجهة المسؤولة والتواصل",
+        "AIKF e.V. Nürnberg، مسجد الرحمة، Wölckernstraße 78، 90459 Nürnberg، ألمانيا. للتواصل: naikf2006@gmail.com."
+      ],
+      [
+        "ما البيانات التي تتم معالجتها؟",
+        "تشمل البيانات الاختيارية في النموذج الاسم والبريد الإلكتروني. لا يجمع نموذج الكشك بيانات الاتصال عند التبرع دون ذكر الاسم. قد تتم معالجة بيانات تقنية مثل نوع المتصفح ووقت الزيارة."
+      ],
+      [
+        "الغرض وجهات معالجة الدفع",
+        "تُستخدم معلومات التبرع لمعالجته ومطابقة التحويل البنكي وإصدار تأكيد الدفع. تعالج Stripe البيانات اللازمة للدفع عبر الإنترنت أو جهاز البطاقات، ويعالج بنكك التحويلات. لا يخزّن الكشك أرقام البطاقات الكاملة أو رموز PIN. تأكيد الدفع ليس شهادة تبرع ضريبية."
+      ],
+      [
+        "مدة الاحتفاظ وحقوقك",
+        "يتم الاحتفاظ بسجلات التبرعات وفق التزامات الاحتفاظ المعمول بها. لطلب الاطلاع على بياناتك أو تصحيحها أو حذفها، تواصل عبر naikf2006@gmail.com. قد تحد التزامات الاحتفاظ من إمكانية الحذف."
+      ],
+      [
+        "اتصال مشفر",
+        "يستخدم هذا الموقع HTTPS لحماية نقل البيانات. تعالج البنوك ومقدمو خدمات الدفع بيانات الدفع في أنظمتهم الخاصة."
+      ]
+    ],
+    "represented": "يمثل الجمعية",
+    "board": "مجلس الإدارة: Baba Issaka Saana (الرئيس)",
+    "contact": "التواصل",
+    "responsible": "المسؤول عن المحتوى",
+    "country": "ألمانيا"
+  }
+}
