@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a5c38"/>
+      <stop offset="100%" stop-color="#0d331f"/>
+    </linearGradient>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="32" fill="url(#bg)"/>
+  <!-- Mosque dome -->
+  <ellipse cx="32" cy="24" rx="14" ry="12" fill="#c9a84c"/>
+  <ellipse cx="32" cy="24" rx="14" ry="12" fill="none" stroke="#e8d48b" stroke-width="0.8"/>
+  <!-- Dome highlight -->
+  <ellipse cx="28" cy="20" rx="5" ry="4" fill="#e8d48b" opacity="0.4"/>
+  <!-- Minaret left -->
+  <rect x="14" y="10" width="3" height="26" rx="1" fill="#c9a84c"/>
+  <circle cx="15.5" cy="10" r="2.5" fill="#e8d48b"/>
+  <!-- Minaret right -->
+  <rect x="47" y="10" width="3" height="26" rx="1" fill="#c9a84c"/>
+  <circle cx="48.5" cy="10" r="2.5" fill="#e8d48b"/>
+  <!-- Mosque base -->
+  <rect x="18" y="32" width="28" height="12" rx="2" fill="#c9a84c"/>
+  <!-- Arch door -->
+  <path d="M28 44 L28 38 Q32 34 36 38 L36 44 Z" fill="#1a5c38"/>
+  <!-- Crescent moon accent top -->
+  <circle cx="32" cy="8" r="4" fill="#e8d48b"/>
+  <circle cx="34" cy="7" r="3.2" fill="#1a5c38"/>
+</svg>

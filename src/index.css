@@ -1,5 +1,290 @@
-body {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+* { box-sizing: border-box; }
+:root {
+  --ink: #203c31; --muted: #61716a; --line: #e2e8e3; --soft: #f4f7f3;
+  --green: #145c46; --gold: #d9c197; --paper: #fff; --canvas: #f5f7f4;
+}
+:root[data-theme="dark"] {
+  --ink: #edf5ef; --muted: #b4c7bc; --line: #354b3e; --soft: #253a2e;
+  --green: #a1d8bd; --paper: #1b2a23; --canvas: #111c18;
+}
+html { font-synthesis: none; text-rendering: optimizeLegibility; }
+body { margin: 0; min-width: 280px; }
+a { color: inherit; }
+button, a, input { -webkit-tap-highlight-color: transparent; }
+button, input { font: inherit; }
+:focus-visible { outline: 3px solid #71a88c; outline-offset: 4px; }
+.step-heading:focus, .step-heading:focus-visible, .thank-you h1:focus, main:focus { outline: none !important; }
+.site-header { background: var(--paper); border-bottom: 1px solid var(--line); }
+.header-inner { max-width: 1248px; margin: 0 auto; padding: 19px 24px; display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; flex-shrink: 0; }
+.brand-symbol { width: 48px; height: 48px; display: grid; place-items: center; color: #fff; background: #145c46; border-radius: 14px; box-shadow: inset 0 0 0 1px #ffffff10; }
+.brand strong { display: block; font-family: 'Manrope Variable', sans-serif; font-size: 25px; letter-spacing: -.045em; line-height: 1.2; font-weight: 800; }
+.brand-association { font-size: 12px; font-weight: 500; letter-spacing: -.01em; color: var(--muted); }
+.brand small { display: block; margin-top: 4px; font-size: 11px; font-weight: 450; color: var(--muted); letter-spacing: .01em; }
+.header-actions { display: flex; align-items: center; gap: 10px; }
+.header-actions .MuiButton-root { color: var(--muted); min-height: 42px; font-size: 12px; border-radius: 10px; }
+.header-actions .reset-button { padding: 10px 14px; margin-inline-end: 4px; }
+.header-actions .theme-button { min-width: 42px; width: 42px; padding: 10px; border: 1px solid var(--line); }
+.language-control { position: relative; }
+.language-control > svg { position: absolute; inset-inline-start: 13px; top: 13px; color: var(--muted); pointer-events: none; z-index: 1; }
+.language-control .language-select { min-width: 136px; height: 44px; border-radius: 10px; font-size: 12px; color: var(--ink); }
+.language-control .MuiSelect-select { padding-inline-start: 40px; }
+.language-control .MuiOutlinedInput-notchedOutline { border-color: var(--line); }
+.main-content { max-width: 1248px; padding: 40px 24px 30px; margin: 0 auto; min-height: calc(100dvh - 167px); }
+.donation-layout { display: grid; grid-template-columns: minmax(285px, .8fr) minmax(0, 1.5fr); align-items: start; gap: 28px; }
+.impact-panel { color: #fff; border-radius: 24px; padding: 36px 30px 28px; background: #174b38; position: relative; overflow: hidden; }
+.impact-panel::after { content: ''; pointer-events: none; position: absolute; width: 230px; height: 230px; inset-inline-end: -150px; top: -135px; border-radius: 50%; border: 1px solid #ffffff12; box-shadow: 0 0 0 28px #ffffff03, 0 0 0 56px #ffffff03; }
+.eyebrow { font-size: 10px; font-weight: 600; letter-spacing: .11em; line-height: 1.6; text-transform: uppercase; }
+.impact-intro > .eyebrow { color: #e5cfaa; display: flex; align-items: center; gap: 8px; }
+.eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; background: #d9c197; }
+.impact-panel .impact-title { font-family: 'Manrope Variable', sans-serif; font-weight: 600; font-size: clamp(32px, 3.1vw, 42px); line-height: 1.2; letter-spacing: -.05em; margin: 23px 0 16px; white-space: pre-line; }
+.impact-panel .impact-copy { color: #d4e2d9; font-size: 13px; line-height: 1.85; font-weight: 400; max-width: 300px; }
+.impact-art { margin: 24px -12px 0; overflow: hidden; }
+.community-illustration { display: block; width: 100%; max-height: 172px; }
+.impact-trust { display: flex; align-items: center; gap: 10px; color: #d4e2d9; padding: 20px 0 24px; font-size: 11px; line-height: 1.7; }
+.impact-trust svg { flex-shrink: 0; color: #dbc79f; }
+.summary-block { padding-top: 22px; border-top: 1px solid #ffffff24; display: grid; gap: 7px; }
+.summary-block .eyebrow { color: #cfdfd4; font-size: 9px; }
+.summary-amount { font-family: 'Manrope Variable', sans-serif; font-weight: 600; font-size: 38px; letter-spacing: -.045em; line-height: 1.35; overflow-wrap: anywhere; }
+.summary-amount.empty-amount { color: #91b29d; }
+.summary-category { display: flex; align-items: center; gap: 7px; color: #d5e4d9; font-size: 11px; }
+.donation-card { padding: 28px 32px; border: 1px solid var(--line); border-radius: 24px !important; min-width: 0; box-shadow: 0 8px 32px #213f2f04; }
+.step-list { list-style: none; margin: 0 0 26px; padding: 0 0 20px; display: flex; border-bottom: 1px solid var(--line); gap: 18px; }
+.step-list li { display: flex; align-items: center; gap: 8px; flex: 1; color: var(--muted); font-size: 11px; white-space: nowrap; font-weight: 450; }
+.step-number { flex-shrink: 0; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--line); color: var(--muted); background: var(--paper); font-size: 10px; font-weight: 600; }
+.step-list li[aria-current="step"] { color: var(--green); font-weight: 650; }
+.step-list .active .step-number { border-color: var(--green); background: var(--green); color: var(--paper); }
+.step-list li:last-child { flex: .75; }
+.donation-card .step-heading { font-size: 29px; letter-spacing: -.045em; line-height: 1.3; margin-bottom: 8px; }
+.donation-card .step-description { font-size: 13px; line-height: 1.7; margin-bottom: 24px; }
+.amount-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-bottom: 21px; }
+.amount-grid .MuiButton-root { min-width: 0; min-height: 70px; padding: 12px 0; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); background: var(--paper); display: flex; align-items: baseline; justify-content: center; gap: 4px; font-variant-numeric: tabular-nums; }
+.amount-number { order: 1; font-family: 'Manrope Variable', sans-serif; font-size: 25px; font-weight: 650; letter-spacing: -.04em; }
+.amount-currency { order: 2; font-size: 15px; font-weight: 500; }
+.amount-grid .MuiButton-root:hover { border-color: var(--green); background: var(--soft); }
+.amount-grid .MuiButton-root[aria-pressed="true"] { background: var(--green); border-color: var(--green); color: var(--paper); box-shadow: 0 5px 14px #145c4615; }
+.custom-amount .MuiOutlinedInput-root { height: 55px; }
+.custom-amount .MuiInputBase-input { font-size: 16px; font-weight: 500; }
+.custom-amount .MuiInputAdornment-root p { color: var(--muted); font-size: 16px; }
+.custom-amount .MuiInputLabel-root { font-size: 14px; }
+.donation-card .section-label { font-size: 12px; font-weight: 600; margin: 23px 0 13px; color: var(--ink); }
+.category-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; }
+.category-grid .category { position: relative; min-width: 0; min-height: 85px; padding: 15px 5px 11px; border: 1px solid var(--line); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px; color: var(--muted); }
+.category-icon { display: flex; color: var(--muted); }
+.category-label { font-size: 12px; line-height: 1.4; font-weight: 500; }
+.category-grid .category:hover { background: var(--soft); border-color: var(--green); }
+.category-grid .category.selected { border-color: #74a28b; background: var(--soft); color: var(--green); }
+.selected .category-icon { color: var(--green); }
+.selection-check { position: absolute; top: 8px; inset-inline-end: 8px; width: 14px; height: 14px; display: grid; place-items: center; border-radius: 50%; color: var(--paper); }
+.selected .selection-check { background: var(--green); }
+.donation-card .primary-action { margin-top: 26px; min-height: 54px; font-size: 14px; display: flex; align-items: center; gap: 18px; box-shadow: 0 5px 14px #145c4610; }
+.donation-card .primary-action.Mui-disabled { color: #7c8d82; background: var(--soft); border: 1px solid var(--line); box-shadow: none; }
+.secure-footer { display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 10px; color: var(--muted); padding-top: 19px; }
+.anonymous-choice { display: flex; align-items: center; gap: 18px; padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); margin: 8px 0 24px; }
+.anonymous-choice.selected { background: var(--soft); border-color: #83a68f; }
+.donor-choice-icon { width: 52px; height: 52px; display: grid; place-items: center; color: var(--green); background: var(--paper); border: 1px solid var(--line); border-radius: 13px; flex-shrink: 0; }
+.anonymous-choice .MuiFormControlLabel-label { font-weight: 600; font-size: 14px; }
+.anonymous-choice .MuiFormControlLabel-root { margin: -5px 0 2px -11px; }
+.anonymous-choice p { font-size: 12px; line-height: 1.7; }
+.donor-fields { display: grid; gap: 24px; margin: 28px 0; }
+.privacy-note { display: flex; gap: 10px; align-items: flex-start; color: var(--muted); font-size: 12px; line-height: 1.8; padding: 16px; border-radius: 12px; background: var(--soft); margin: 24px 0; }
+.privacy-note svg { flex-shrink: 0; margin-top: 3px; }
+.step-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 24px; margin-top: 22px; border-top: 1px solid var(--line); }
+.step-actions > :last-child { min-width: 52%; }
+.step-actions .MuiButton-root { font-size: 13px; }
+.payment-options { display: grid; gap: 11px; }
+.payment-options .payment-option { min-height: 84px; padding: 16px; border: 1px solid var(--line); border-radius: 14px; display: flex; justify-content: flex-start; gap: 14px; color: var(--ink); text-align: start; }
+.payment-options .payment-option.selected { background: var(--soft); border-color: #74a28b; }
+.method-icon { width: 48px; height: 48px; display: grid; place-items: center; color: var(--green); background: var(--soft); border: 1px solid var(--line); border-radius: 12px; flex-shrink: 0; }
+.selected .method-icon { background: var(--paper); }
+.method-text { display: flex; flex-direction: column; gap: 5px; flex: 1; }
+.method-text strong { font-size: 14px; font-weight: 600; }
+.method-text > span { font-size: 12px; line-height: 1.55; color: var(--muted); }
+.payment-options .payment-option.Mui-disabled { color: var(--muted); background: var(--soft); opacity: 1; }
+.payment-option.Mui-disabled .method-text strong { color: var(--muted); }
+.payment-options .Mui-disabled .method-icon { color: var(--muted); }
+.payment-availability { font-size: 11px !important; line-height: 1.8 !important; margin-top: 16px !important; }
+.transfer-panel { display: flex; align-items: center; gap: 22px; margin-top: 24px; padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--soft); }
+.qr-frame { background: #fff; color: #000; padding: 4px; border: 1px solid #dde4de; border-radius: 10px; display: inline-flex; flex-shrink: 0; width: fit-content; }
+.bank-details { min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 12px; line-height: 1.65; color: var(--muted); overflow-wrap: anywhere; }
+.bank-details strong { font-size: 12px; color: var(--ink); font-weight: 600; }
+.bank-details code { color: var(--ink); font-size: 12px; font-weight: 500; }
+.bank-details small { font-size: 10px; line-height: 1.7; margin-top: 4px; }
+.active-payment { display: flex; align-items: center; flex-direction: column; gap: 24px; text-align: center; padding: 12px 0; }
+.waiting-status { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.thank-you { max-width: 580px; margin: 30px auto; padding: 48px; border-radius: 24px !important; border: 1px solid var(--line); text-align: center; }
+.success-mark { width: 84px; height: 84px; border-radius: 24px; display: grid; place-items: center; margin: 0 auto 25px; background: var(--soft); color: var(--green); }
+.thank-you .thank-you-amount { font-family: 'Manrope Variable', sans-serif; font-size: 42px; font-weight: 600; letter-spacing: -.05em; margin: 20px 0; }
+.site-footer { max-width: 1248px; margin: 0 auto; padding: 16px 24px 22px; display: flex; justify-content: space-between; align-items: center; gap: 14px; font-size: 11px; color: var(--muted); }
+.site-footer nav { display: flex; align-items: center; gap: 24px; }
+.site-footer a { text-decoration: none; min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+.site-footer a:hover { color: var(--green); text-decoration: underline; }
+.admin-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 8px 24px; background: var(--soft); }
+.skip-link { position: fixed; top: -70px; inset-inline-start: 20px; z-index: 999; padding: 12px; background: var(--paper); border-radius: 8px; }
+.skip-link:focus { top: 10px; }
+.document-content .MuiPaper-root { border-color: var(--line); box-shadow: 0 6px 28px #203c3104; }
+.provider-table { border-collapse: collapse; width: 100%; margin: 20px 0; font-size: 13px; line-height: 1.7; }
+.provider-table caption { text-align: start; color: var(--muted); margin-bottom: 10px; font-size: 12px; }
+.provider-table th, .provider-table td { text-align: start; padding: 14px; border: 1px solid var(--line); vertical-align: top; min-width: 170px; }
+.provider-table th { background: var(--soft); }
+.setup-list { font-size: 14px; line-height: 1.8; padding-inline-start: 24px; }
+.setup-list li { margin: 10px 0; }
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+html[dir="rtl"] .impact-panel .impact-title, html[dir="rtl"] .brand strong { font-family: 'Noto Sans Arabic Variable', sans-serif; letter-spacing: 0; }
+html[dir="rtl"] .impact-panel .impact-title { line-height: 1.6; font-size: 36px; }
+html[dir="rtl"] .step-heading { letter-spacing: 0; }
+html[dir="rtl"] .amount-grid .MuiButton-root { direction: ltr; }
+html[dir="rtl"] .MuiButton-endIcon svg { transform: rotate(180deg); }
+@media (min-width: 1025px) { .impact-panel { position: sticky; top: 24px; } }
+@media (max-width: 1100px) and (min-width: 1025px) { .donation-card { padding-inline: 26px; } .impact-panel { padding-inline: 25px; } .category-label { font-size: 10px; } .transfer-panel { padding: 14px; gap: 14px; flex-wrap: wrap; } }
+@media (max-width: 1024px) {
+  .main-content { max-width: 780px; padding-top: 26px; }
+  .donation-layout { grid-template-columns: 1fr; gap: 22px; }
+  .impact-panel { padding: 0 4px; background: transparent; color: var(--ink); display: grid; grid-template-columns: 1fr auto; gap: 24px; border-radius: 0; }
+  .impact-panel::after, .impact-art, .impact-trust { display: none; }
+  .impact-intro > .eyebrow { color: var(--green); font-size: 9px; letter-spacing: .1em; }
+  .eyebrow-dot { background: var(--green); }
+  .impact-panel .impact-title { font-size: 29px; margin: 9px 0 7px; white-space: normal; letter-spacing: -.045em; }
+  .impact-panel .impact-copy { max-width: 480px; font-size: 12px; color: var(--muted); line-height: 1.7; }
+  .summary-block { min-width: 160px; border: 1px solid var(--line); border-radius: 14px; padding: 15px 18px; background: var(--paper); align-self: center; gap: 5px; }
+  .summary-block .eyebrow { color: var(--muted); font-size: 8px; }
+  .summary-amount { font-size: 28px; color: var(--green); }
+  .summary-amount.empty-amount { color: var(--muted); }
+  .summary-category { color: var(--muted); font-size: 10px; }
+  .donation-card { padding: 27px 30px; }
+  .site-footer { max-width: 780px; }
+}
+@media (max-width: 600px) {
+  .header-inner { padding: 15px 18px; gap: 10px; }
+  .brand { gap: 9px; }
+  .brand-symbol { width: 40px; height: 40px; border-radius: 12px; }
+  .brand-symbol svg { width: 23px; height: 23px; }
+  .brand strong { font-size: 22px; }
+  .brand-association { font-size: 10px; }
+  .brand small { display: none; }
+  .header-actions { gap: 7px; }
+  .header-actions .reset-button { font-size: 0; padding: 10px; margin: 0; min-width: 38px; }
+  .header-actions .reset-button .MuiButton-startIcon { margin: 0; }
+  .header-actions .theme-button { width: 40px; min-width: 40px; min-height: 44px; display: inline-flex; padding: 10px; }
+  .language-control > svg { display: none; }
+  .language-control .language-select { min-width: 90px; height: 40px; font-size: 11px; }
+  .language-control .MuiSelect-select { padding-inline-start: 12px; }
+  .main-content { padding: 22px 16px 20px; }
+  .impact-panel { gap: 14px; grid-template-columns: minmax(0, 1fr) 122px; padding: 0 4px; align-items: center; }
+  .impact-panel .impact-title { font-size: 25px; margin: 10px 0 0; max-width: 340px; line-height: 1.25; }
+  .impact-panel .impact-copy { display: none; }
+  .summary-block { display: flex; flex-direction: column; padding: 13px 12px; min-width: 0; gap: 6px; border-radius: 12px; }
+  .summary-block .eyebrow { grid-column: 1; grid-row: 1; }
+  .summary-category { grid-column: 1; grid-row: 2; }
+  .summary-amount { align-self: flex-start; font-size: 24px; }
+  .summary-amount.large-amount { font-size: 17px; }
+  .donation-layout { gap: 20px; }
+  .donation-card { padding: 23px 20px; border-radius: 20px !important; }
+  .step-list { gap: 10px; margin-bottom: 23px; padding-bottom: 18px; }
+  .step-list li { gap: 6px; font-size: 10px; min-width: 0; white-space: normal; }
+  .step-list li:last-child { flex: .8; }
+  .step-number { width: 23px; height: 23px; font-size: 9px; }
+  .donation-card .step-heading { font-size: 24px; line-height: 1.4; }
+  .donation-card .step-description { font-size: 12px; margin-bottom: 21px; }
+  .amount-grid { gap: 7px; margin-bottom: 22px; }
+  .amount-grid .MuiButton-root { min-height: 61px; gap: 2px; border-radius: 10px; }
+  .amount-number { font-size: 21px; }
+  .amount-currency { font-size: 12px; }
+  .category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+  .category-grid .category { min-height: 61px; flex-direction: row; justify-content: flex-start; padding: 15px 12px; gap: 10px; }
+  .category-icon svg { width: 21px; height: 21px; }
+  .category-label { font-size: 12px; }
+  .selection-check { width: 12px; height: 12px; top: 5px; inset-inline-end: 5px; }
+  .selection-check svg { width: 9px; height: 9px; }
+  .donation-card .primary-action { margin-top: 24px; }
+  .secure-footer { font-size: 9px; padding-top: 18px; }
+  .anonymous-choice { padding: 15px; gap: 12px; align-items: flex-start; }
+  .donor-choice-icon { width: 42px; height: 42px; }
+  .donor-choice-icon svg { width: 24px; height: 24px; }
+  .anonymous-choice .MuiFormControlLabel-label { font-size: 12px; }
+  .anonymous-choice p { font-size: 11px; }
+  .step-actions { gap: 8px; }
+  .step-actions > :last-child { min-width: 50%; }
+  .step-actions .MuiButton-root { font-size: 14px; padding: 12px 15px; }
+  .payment-options .payment-option { padding: 13px; gap: 11px; }
+  .method-icon { width: 40px; height: 40px; border-radius: 10px; }
+  .method-icon svg { width: 22px; height: 22px; }
+  .method-text strong { font-size: 14px; }
+  .method-text > span { font-size: 12px; }
+  .transfer-panel { flex-direction: column; align-items: center; padding: 19px 16px; gap: 19px; }
+  .bank-details { width: 100%; font-size: 12px; }
+  .bank-details code { font-size: 12px; }
+  .bank-details strong { font-size: 13px; }
+  .bank-details small { font-size: 11px; }
+  .site-footer { padding: 0 20px 18px; flex-direction: column; align-items: flex-start; gap: 0; font-size: 11px; }
+  .site-footer nav { width: 100%; gap: 20px; flex-wrap: wrap; }
+  .site-footer .admin-link { margin-inline-start: auto; }
+  .thank-you { padding: 35px 24px; }
+  .thank-you h1 { font-size: 32px; }
+  .stats-grid { grid-template-columns: 1fr; }
+  html[dir="rtl"] .impact-panel .impact-title { font-size: 29px; }
+}
+@media (max-width: 360px) {
+  .brand small { max-width: 110px; font-size: 8px; }
+  .brand-association { display: none; }
+  .header-inner { padding-inline: 14px; }
+  .header-actions { gap: 4px; }
+  .brand-symbol { width: 36px; height: 40px; }
+  .brand { gap: 7px; }
+  .header-actions .reset-button { min-width: 34px; padding-inline: 7px; }
+  .header-actions .theme-button { width: 36px; min-width: 36px; padding-inline: 8px; }
+  .impact-panel { grid-template-columns: minmax(0, 1fr) 110px; gap: 12px; }
+  .impact-panel .impact-title { font-size: 23px; }
+  .summary-amount { font-size: 22px; }
+  .language-control .language-select { min-width: 82px; }
+  .main-content { padding-inline: 12px; }
+  .donation-card { padding-inline: 16px; }
+  .amount-number { font-size: 19px; }
+  .category-grid .category { padding-inline: 9px; gap: 7px; }
+  .step-list li, .step-list li:last-child { flex: 0 0 auto; }
+  .step-list li[aria-current="step"] { flex: 1; }
+  .step-list li:not([aria-current="step"]) > span:last-child { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+.bank-details .bank-instruction { font-size: 14px; margin-bottom: 8px; }
+.bank-field { display: flex; flex-direction: column; gap: 3px; margin-bottom: 7px; }
+.bank-field > span { font-size: 10px; font-weight: 500; color: var(--muted); }
+.bank-field > strong { font-size: 13px; line-height: 1.65; font-weight: 550; color: var(--ink); }
+.bank-field > code { font-size: 13px; line-height: 1.7; letter-spacing: .015em; }
+.bank-reference-text { overflow-wrap: anywhere; text-align: start; }
+@media (max-width: 600px) { .bank-details .bank-instruction { font-size: 14px; } .bank-field > span { font-size: 11px; } .bank-field > strong, .bank-field > code { font-size: 13px; } }
+
+/* Kiosk readability: donors read from about 60 cm while standing, so no text
+   below 14px and no control below 48px. Kept last so it wins over the
+   breakpoint rules above. */
+.brand small, .brand-association, .eyebrow, .summary-block .eyebrow, .impact-intro > .eyebrow,
+.summary-category, .impact-trust, .impact-panel .impact-copy, .step-list li, .step-number,
+.donation-card .step-description, .donation-card .section-label, .category-label,
+.secure-footer, .anonymous-choice p, .anonymous-choice .MuiFormControlLabel-label, .privacy-note,
+.step-actions .MuiButton-root, .method-text > span, .payment-availability, .bank-details,
+.bank-details strong, .bank-details code, .bank-details small, .bank-field > span,
+.bank-field > strong, .bank-field > code, .site-footer, .header-actions .MuiButton-root,
+.language-control .language-select { font-size: 14px !important; }
+.payment-availability { line-height: 1.6 !important; }
+.step-number { width: 30px; height: 30px; }
+.header-actions .MuiButton-root, .header-actions .theme-button { min-height: 48px; }
+.header-actions .theme-button { width: 48px; min-width: 48px; }
+.language-control .language-select { height: 48px; }
+.site-footer a { min-height: 48px; }
+@media (max-width: 600px) {
+  /* Only the current step keeps a visible label; the others stay readable for screen readers. */
+  .step-list li { font-size: 14px !important; }
+  .step-list li, .step-list li:last-child { flex: 0 0 auto; }
+  .step-list li[aria-current="step"] { flex: 1; }
+  .step-list li:not([aria-current="step"]) > span:last-child { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .header-actions .reset-button { min-width: 48px; font-size: 0 !important; }
+  .language-control .language-select { min-width: 96px; }
+  /* Keep the next step reachable without scrolling on phones. */
+  .donation-card .primary-action, .step-actions { position: sticky; bottom: 12px; z-index: 2; }
+  .donation-card .primary-action, .donation-card .primary-action.Mui-disabled { opacity: 1; box-shadow: 0 -6px 18px #0000001f; }
+  .donation-card .primary-action.Mui-disabled { background: var(--paper); }
+  .step-actions { background: var(--paper); padding-bottom: 4px; }
 }

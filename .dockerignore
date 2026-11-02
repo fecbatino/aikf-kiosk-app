@@ -6,3 +6,9 @@ dist
 .env.development
 .env.local
 .env.test
+
+node_modules*
+package-lock.before*
+audit*.json
+
+design-preview-dist

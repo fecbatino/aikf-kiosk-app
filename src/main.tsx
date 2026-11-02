@@ -1,42 +1,41 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
-import { HashRouter } from 'react-router-dom'
-import { AuthProvider } from './contexts/AuthContext';
-import { SettingsProvider } from './contexts/SettingsContext';
-import './i18n';
-import ThemeWrapper from './ThemeWrapper';
-import ErrorBoundary from './ErrorBoundary';
-import { SnackbarProvider } from './contexts/SnackbarContext';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App.tsx";
+import "./index.css";
+import './fonts.css';
+import { HashRouter } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import { SettingsProvider } from "./contexts/SettingsContext";
+import "./i18n";
+import ThemeWrapper from "./ThemeWrapper";
+import ErrorBoundary from "./ErrorBoundary";
+import { SnackbarProvider } from "./contexts/SnackbarContext";
 
-// Importiere die Service Worker Registrierung
-import { registerSW } from 'virtual:pwa-register';
+// A fresh deployment can replace a lazy-loaded chunk while a kiosk tab is open.
+// Payment identifiers already live in sessionStorage and survive this refresh.
+window.addEventListener('vite:preloadError', event => {
+  const previous = Number(sessionStorage.getItem('aikf-last-chunk-refresh') || 0);
+  if (Date.now() - previous < 30000) return;
+  event.preventDefault();
+  sessionStorage.setItem('aikf-last-chunk-refresh', String(Date.now()));
+  window.location.reload();
+});
 
-// Registriere den Service Worker nur im Produktionsmodus
-if (import.meta.env.PROD) {
-  registerSW({
-    onNeedRefresh() {
-      console.log('Neue Inhalte verfügbar, bitte aktualisieren.');
-    },
-    onOfflineReady() {
-      console.log('App ist jetzt offline-fähig.');
-    },
-  });
-} else {
-  // Im Entwicklungsmodus alle Service Worker deinstallieren, um Caching-Probleme zu vermeiden
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then((registrations) => {
-      for (const registration of registrations) {
-        registration.unregister().then(() => {
-          console.log('Dev SW unregistered');
-        });
+// Service Worker für PWA registrieren
+if ("serviceWorker" in navigator && import.meta.env.BASE_URL === "/") {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js", { scope: "/" }).then(
+      (registration) => {
+        console.log("SW registered:", registration.scope);
+      },
+      (err) => {
+        console.log("SW registration failed:", err);
       }
-    });
-  }
+    );
+  });
 }
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <HashRouter>
       <SettingsProvider>
@@ -51,5 +50,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         </AuthProvider>
       </SettingsProvider>
     </HashRouter>
-  </React.StrictMode>,
-)
+  </React.StrictMode>
+);
