@@ -1,47 +1,32 @@
-import React from 'react';
 import { renderHook, act } from '@testing-library/react';
 import { AuthProvider, useAuth } from '../contexts/AuthContext';
-import { SettingsProvider } from '../contexts/SettingsContext';
-
-// In the test environment VITE_ADMIN_PIN is not loaded from .env.development,
-// so config.adminPin falls back to '0000'.
-const TEST_PIN = '0000';
-
-const AllProviders = ({ children }: { children: React.ReactNode }) => (
-  <SettingsProvider>
-    <AuthProvider>{children}</AuthProvider>
-  </SettingsProvider>
-);
-
-describe('AuthContext', () => {
-  it('starts unauthenticated', () => {
-    const { result } = renderHook(() => useAuth(), { wrapper: AllProviders });
+import { adminApi, tokenStorage } from '../api';
+vi.mock('../api', () => ({ adminApi: { login: vi.fn(), me: vi.fn() }, tokenStorage: { get: vi.fn(() => null), set: vi.fn(), remove: vi.fn() } }));
+beforeEach(() => vi.clearAllMocks());
+describe('administrator authentication', () => {
+  it('starts unauthenticated and rejects failed server authentication', async () => {
+    vi.mocked(adminApi.login).mockRejectedValue(new Error('unauthorized'));
+    const { result } = renderHook(useAuth, { wrapper: AuthProvider });
     expect(result.current.isAuthenticated).toBe(false);
+    await act(async () => { expect(await result.current.login('admin@example.invalid', 'wrong')).toBe(false); });
+    expect(tokenStorage.set).not.toHaveBeenCalled();
   });
-
-  it('allows successful login with correct PIN', () => {
-    const { result } = renderHook(() => useAuth(), { wrapper: AllProviders });
-    act(() => {
-      const success = result.current.login(TEST_PIN);
-      expect(success).toBe(true);
-    });
+  it('uses server credentials, keeps a stable token getter, and clears state on logout', async () => {
+    vi.mocked(adminApi.login).mockResolvedValue({ token: 'test-token', admin: { id: '1', email: 'admin@example.invalid' } });
+    const { result } = renderHook(useAuth, { wrapper: AuthProvider });
+    const getter = result.current.getToken;
+    await act(async () => { expect(await result.current.login('admin@example.invalid', 'password')).toBe(true); });
+    expect(result.current.getToken).toBe(getter);
+    expect(tokenStorage.set).toHaveBeenCalledWith('test-token');
     expect(result.current.isAuthenticated).toBe(true);
+    act(() => result.current.logout());
+    expect(result.current.isAuthenticated).toBe(false); expect(tokenStorage.remove).toHaveBeenCalled();
   });
-
-  it('denies login with incorrect PIN', () => {
-    const { result } = renderHook(() => useAuth(), { wrapper: AllProviders });
-    act(() => {
-      const success = result.current.login('9999');
-      expect(success).toBe(false);
-    });
-    expect(result.current.isAuthenticated).toBe(false);
-  });
-
-  it('allows logout after login', () => {
-    const { result } = renderHook(() => useAuth(), { wrapper: AllProviders });
-    act(() => { result.current.login(TEST_PIN); });
-    expect(result.current.isAuthenticated).toBe(true);
-    act(() => { result.current.logout(); });
+  it('keeps weak-password sessions out of the administrator area', async () => {
+    vi.mocked(adminApi.login).mockResolvedValue({ token: 'restricted-token', mustChangePassword: true, admin: { id: '1', email: 'admin@example.invalid' } });
+    const { result } = renderHook(useAuth, { wrapper: AuthProvider });
+    await act(async () => { expect(await result.current.login('admin@example.invalid', 'short')).toBe(true); });
+    expect(result.current.mustChangePassword).toBe(true);
     expect(result.current.isAuthenticated).toBe(false);
   });
 });

@@ -1,164 +1,49 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
-import { Routes, Route, Link } from 'react-router-dom';
+import { Box, Button, MenuItem, Select, Typography } from '@mui/material';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import DonatePage from './pages/DonatePage';
-import DonationHistoryPage from './pages/DonationHistoryPage';
+import ImprintPage from './pages/ImprintPage';
+import PrivacyPage from './pages/PrivacyPage';
 import { useAuth } from './contexts/AuthContext';
 import { useThemeToggle } from './ThemeWrapper';
-
+import Icon from './components/Icon';
 const AdminPage = React.lazy(() => import('./pages/AdminPage'));
-
+const DonationHistoryPage = React.lazy(() => import('./pages/DonationHistoryPage'));
 function App() {
   const { t, i18n } = useTranslation();
   const { isAuthenticated, logout } = useAuth();
   const { isDark, toggleTheme } = useThemeToggle();
-
-  const languages = ['de', 'en', 'ar', 'fr'];
-
-  const cycleLanguage = () => {
-    const currentIndex = languages.indexOf(i18n.language);
-    const nextIndex = (currentIndex + 1) % languages.length;
-    i18n.changeLanguage(languages[nextIndex]);
-  };
-
-  return (
-    <>
-      {/* Admin management top bar */}
-      {isAuthenticated && (
-        <Box sx={{
-          bgcolor: 'rgba(6, 182, 212, 0.1)',
-          borderBottom: '1px solid rgba(6, 182, 212, 0.3)',
-          py: 1,
-          px: 3,
-          display: 'flex',
-          gap: 2,
-          justifyContent: 'flex-end',
-          alignItems: 'center'
-        }}>
-          <Typography variant="subtitle2" sx={{ color: 'primary.main', mr: 'auto', fontWeight: 'bold', letterSpacing: '0.05em' }}>
-            ADMIN MODUS
-          </Typography>
-          <Button size="small" variant="text" component={Link} to="/" sx={{ minHeight: '36px' }}>Kiosk-Ansicht</Button>
-          <Button size="small" variant="text" component={Link} to="/history" sx={{ minHeight: '36px' }}>Spendenhistorie</Button>
-          <Button size="small" variant="text" component={Link} to="/admin" sx={{ minHeight: '36px' }}>Einstellungen</Button>
-          <Button size="small" variant="outlined" color="error" onClick={logout} sx={{ ml: 2, minHeight: '36px' }}>Abmelden</Button>
-        </Box>
-      )}
-
-      {/* Main Kiosk Header */}
-      <AppBar position="static" elevation={0} sx={{
-        bgcolor: isDark ? '#0d1117' : 'primary.main',
-        borderBottom: isDark ? '1px solid rgba(255,255,255,0.05)' : 'none',
-      }}>
-        <Toolbar sx={{ justifyContent: 'space-between', py: 1, px: 3 }}>
-          <Typography variant="h5" component="div" sx={{
-            fontWeight: 800,
-            color: '#ffffff',
-            letterSpacing: '-0.02em',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-            userSelect: 'none'
-          }}>
-            {t('kiosk_title')}
-          </Typography>
-
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            {/* Theme toggle */}
-            <Button
-              onClick={toggleTheme}
-              size="small"
-              sx={{
-                minWidth: '42px',
-                width: '42px',
-                height: '42px',
-                borderRadius: '10px',
-                padding: 0,
-                fontSize: '1.2rem',
-                color: '#ffffff',
-                bgcolor: 'rgba(255,255,255,0.12)',
-                border: '1px solid rgba(255,255,255,0.2)',
-                mr: 1,
-                '&:hover': { bgcolor: 'rgba(255,255,255,0.22)' },
-              }}
-              title={isDark ? 'Islamisches Theme' : 'Nacht-Theme'}
-            >
-              {isDark ? '🕌' : '🌙'}
-            </Button>
-
-            {/* Language cycle button */}
-            <Button
-              onClick={cycleLanguage}
-              size="small"
-              sx={{
-                height: '42px',
-                borderRadius: '10px',
-                px: 1.5,
-                bgcolor: 'rgba(255,255,255,0.12)',
-                border: '1px solid rgba(255,255,255,0.2)',
-                color: '#ffffff',
-                fontWeight: 'bold',
-                fontSize: '0.85rem',
-                '&:hover': { bgcolor: 'rgba(255,255,255,0.22)' },
-              }}
-            >
-              🌐 {i18n.language.toUpperCase()}
-            </Button>
-          </Box>
-        </Toolbar>
-      </AppBar>
-
-      {/* Main Content Area */}
-      <Box sx={{
-        maxWidth: 1280,
-        margin: '0 auto',
-        padding: { xs: '1.5rem', sm: '3rem' },
-        textAlign: 'center',
-      }}>
+  const { pathname } = useLocation();
+  const kiosk = ['/', '/donate', '/payment-return'].includes(pathname);
+  return <>
+    <a className="skip-link" href="#main" onClick={event => { event.preventDefault(); document.getElementById('main')?.focus(); }}>{t('skip_content')}</a>
+    {isAuthenticated && <Box className="admin-bar"><Typography variant="body2">Administration</Typography><Button component={Link} to="/">Kiosk</Button><Button component={Link} to="/history">Spenden</Button><Button component={Link} to="/admin">Verwaltung</Button><Button onClick={logout}>Abmelden</Button></Box>}
+    <header className="site-header">
+      <div className="header-inner">
+      <Link to="/" className="brand" onClick={event => { if (kiosk) { event.preventDefault(); window.dispatchEvent(new Event('kiosk-reset')); } }} aria-label={t('kiosk_title')}><span className="brand-symbol"><Icon name="hand" size={26} /></span><span><strong>AIKF<span className="brand-association"> e.V.</span></strong><small>{t('brand_subtitle')}</small></span></Link>
+      <div className="header-actions">
+        {kiosk && <Button className="reset-button" onClick={() => window.dispatchEvent(new Event('kiosk-reset'))} startIcon={<Icon name="reset" size={17} />}>{t('btn_cancel')}</Button>}
+        <Button className="theme-button" onClick={toggleTheme} aria-label={t(isDark ? 'light_mode' : 'dark_mode')}><Icon name={isDark ? 'sun' : 'night'} size={20} /></Button>
+        <div className="language-control"><Icon name="globe" size={18} />
+        <Select className="language-select" size="small" value={i18n.language} onChange={event => i18n.changeLanguage(event.target.value)} inputProps={{ 'aria-label': t('select_language') }}>
+          <MenuItem value="de">Deutsch</MenuItem><MenuItem value="en">English</MenuItem><MenuItem value="fr">Français</MenuItem><MenuItem value="ar">العربية</MenuItem>
+        </Select>
+        </div>
+      </div>
+      </div>
+    </header>
+    <main id="main" tabIndex={-1} className={`main-content ${kiosk ? 'kiosk-content' : 'document-content'}`}>
+      <React.Suspense fallback={<Typography>{t('loading')}</Typography>}>
         <Routes>
-          <Route path="/" element={<DonatePage />} />
-          <Route path="/donate" element={<DonatePage />} />
-          <Route path="/history" element={<DonationHistoryPage />} />
-          <Route path="/admin" element={
-            <React.Suspense fallback={<Box sx={{ display: 'flex', justifyContent: 'center', mt: 10 }}>Lade Admin-Bereich...</Box>}>
-              <AdminPage />
-            </React.Suspense>
-          } />
+          <Route path="/" element={<DonatePage />} /><Route path="/donate" element={<DonatePage />} /><Route path="/payment-return" element={<DonatePage />} />
+          <Route path="/admin" element={<AdminPage />} /><Route path="/history" element={<DonationHistoryPage />} />
+          <Route path="/imprint" element={<ImprintPage />} /><Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="*" element={<Link to="/">{t('home')}</Link>} />
         </Routes>
-      </Box>
-
-      {/* Hidden admin login shortcut (subtle gear icon in bottom-right corner) */}
-      <Button
-        component={Link}
-        to="/admin"
-        sx={{
-          position: 'fixed',
-          bottom: 16,
-          right: 16,
-          minWidth: '40px',
-          width: '40px',
-          height: '40px',
-          borderRadius: '50%',
-          padding: 0,
-          color: 'text.secondary',
-          opacity: 0.15,
-          zIndex: 1000,
-          transition: 'opacity 0.2s',
-          '&:hover': {
-            opacity: 0.7,
-            bgcolor: 'rgba(255, 255, 255, 0.05)',
-          },
-        }}
-        aria-label="Admin Login"
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="3"></circle>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-        </svg>
-      </Button>
-    </>
-  );
+      </React.Suspense>
+    </main>
+    <footer className="site-footer"><span>{t('footer_copyright')}</span><nav aria-label={t('footer_links')}><Link to="/imprint">{t('footer_imprint')}</Link><Link to="/privacy">{t('footer_privacy')}</Link><Link className="admin-link" to="/admin"><Icon name="settings" size={14} />{t('admin_area')}</Link></nav></footer>
+  </>;
 }
-
 export default App;
