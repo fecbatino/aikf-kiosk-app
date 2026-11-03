@@ -61,7 +61,7 @@
   "scan_banking": "Scan with your banking app",
   "reference": "Payment reference",
   "transfer_no_confirmation": "1. Open your banking app and scan the QR code. 2. Check the details. 3. Approve the transfer in your banking app. The kiosk does not debit your account.",
-  "transfer_record": "Done",
+  "transfer_record": "Register donation",
   "transfer_pending": "Your donation intention is saved. Please approve the transfer in your banking app. Receipt of payment has not yet been confirmed.",
   "prepare_checkout": "Prepare secure checkout",
   "start_terminal": "Start card payment",
