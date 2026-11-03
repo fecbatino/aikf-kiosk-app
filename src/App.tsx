@@ -34,7 +34,7 @@ function App() {
         <Button className="theme-button" onClick={toggleTheme} aria-label={t(isDark ? 'light_mode' : 'dark_mode')}><Icon name={isDark ? 'sun' : 'night'} size={20} /></Button>
         <div className="language-control"><Icon name="languages" size={18} />
         <Select className="language-select" size="small" value={i18n.language} onChange={event => i18n.changeLanguage(event.target.value)} inputProps={{ 'aria-label': t('select_language') }}
-          renderValue={value => { const current = languages.find(item => item[0] === value); return <span lang={value}><span className="language-current-code">{current?.[1]}</span><span className="language-current-name">{current?.[2]}</span></span>; }}
+          renderValue={value => { const current = languages.find(item => item[0] === value); return <span lang={value}><span className="language-current-code" aria-hidden="true">{current?.[1]}</span><span className="language-current-name">{current?.[2]}</span></span>; }}
           MenuProps={{ slotProps: { paper: { className: 'language-menu' } } }}>
           {languages.map(([code, short, name]) => <MenuItem key={code} value={code} lang={code}><span className="language-code" aria-hidden="true">{short}</span><span className="language-name">{name}</span>{i18n.language === code && <Icon name="check" size={18} />}</MenuItem>)}
         </Select>
