@@ -33,6 +33,14 @@ html:has(.kiosk-content) :is(input, textarea) { -webkit-user-select: text; user-
 .language-control .language-select { min-width: 136px; height: 48px; border-radius: 10px; font-size: 14px; color: var(--ink); }
 .language-control .MuiSelect-select { min-height: 24px; padding-block: 12px; padding-inline-start: 40px; }
 .language-control .MuiOutlinedInput-notchedOutline { border-color: var(--line); }
+/* Language menu: every language in its own name with its code, the current one ticked; 48px rows for touch. */
+.language-menu .MuiMenuItem-root { min-height: 48px; gap: 12px; padding-inline: 14px 16px; font-size: 15px; }
+.language-code { min-width: 30px; padding: 2px 0; border: 1px solid var(--line); border-radius: 6px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-align: center; color: var(--muted); }
+.language-menu .Mui-selected .language-code { border-color: var(--green); color: var(--green); }
+.language-name { flex: 1; }
+.language-menu .MuiMenuItem-root > svg { color: var(--green); }
+.language-menu [lang="ar"] .language-name, .language-select [lang="ar"] { font-family: 'Noto Sans Arabic Variable', sans-serif; }
+.language-current-code { display: none; }
 .main-content { max-width: 1248px; padding: 40px 24px 30px; margin: 0 auto; min-height: calc(100dvh - 167px); }
 .donation-layout { display: grid; grid-template-columns: minmax(240px, .65fr) minmax(0, 1.65fr); align-items: start; gap: 28px; }
 .impact-panel { color: #fff; border-radius: 24px; padding: 36px 30px 28px; background: #174b38; position: relative; overflow: hidden; }
@@ -181,13 +189,14 @@ html[dir="rtl"] .MuiButton-endIcon svg { transform: rotate(180deg); }
   .brand-symbol { width: 40px; height: 40px; border-radius: 12px; }
   .brand-symbol svg { width: 23px; height: 23px; }
   .brand strong { font-size: 22px; }
-  .brand small, .brand-association, .language-control > svg, .impact-panel .impact-copy, .donation-layout:not(.payment-layout) > .impact-panel { display: none; }
+  .brand small, .brand-association, .language-current-name, .impact-panel .impact-copy, .donation-layout:not(.payment-layout) > .impact-panel { display: none; }
   .header-actions { gap: 4px; }
   .header-actions .reset-button { font-size: 0; padding: 12px; margin: 0; width: 48px; min-width: 48px; }
   .header-actions .reset-button .MuiButton-startIcon { margin: 0; }
   .header-actions .theme-button { width: 48px; min-width: 48px; padding: 12px; }
-  .language-control .language-select { min-width: 96px; height: 48px; }
-  .language-control .MuiSelect-select { padding-inline-start: 10px; }
+  .language-control .language-select { min-width: 92px; height: 48px; }
+  .language-control .MuiSelect-select { padding-inline-start: 38px; }
+  .language-current-code { display: inline; font-weight: 700; letter-spacing: .04em; }
   .main-content { padding: 22px 16px 20px; }
   .impact-panel { gap: 14px; grid-template-columns: minmax(0, 1fr) 122px; padding: 0 4px; align-items: center; }
   .impact-panel .impact-title, html[dir="rtl"] .impact-panel .impact-title { font-size: 24px; margin: 10px 0 0; max-width: 340px; line-height: 1.25; }
