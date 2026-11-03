@@ -1,4 +1,4 @@
-import {act,fireEvent,render,screen,waitFor} from '@testing-library/react';
+import {act,fireEvent,render,screen,waitFor,within} from '@testing-library/react';
 import {MemoryRouter} from 'react-router-dom';
 import App from '../App';
 import {AuthProvider,useAuth} from '../contexts/AuthContext';
@@ -31,4 +31,14 @@ it('renders Arabic privacy headings and body rather than German text',async()=>{
  language.language='ar';
  await act(async()=>{render(<MemoryRouter initialEntries={['/privacy']}><AuthProvider><App/></AuthProvider></MemoryRouter>);});
  expect(screen.getByText('الخصوصية باختصار')).toBeInTheDocument();expect(screen.queryByText('Datenschutz auf einen Blick')).not.toBeInTheDocument();
+});
+it('lists every language in its own name and lang, ticks the current one and switches on click',async()=>{
+ const change=vi.spyOn(language,'changeLanguage');
+ await act(async()=>{render(<MemoryRouter><AuthProvider><App/></AuthProvider></MemoryRouter>);});
+ fireEvent.mouseDown(screen.getByRole('combobox',{name:'select_language'}));
+ const options=screen.getAllByRole('option');
+ expect(options.map(option=>[option.getAttribute('lang'),within(option).getByText(/^(Deutsch|English|Français|العربية)$/).textContent])).toEqual([['de','Deutsch'],['en','English'],['fr','Français'],['ar','العربية']]);
+ expect(options.map(option=>option.querySelector('.lucide-check')!==null)).toEqual([true,false,false,false]);
+ fireEvent.click(options[2]);
+ expect(change).toHaveBeenCalledWith('fr');
 });
