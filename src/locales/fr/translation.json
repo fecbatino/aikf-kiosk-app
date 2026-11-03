@@ -61,7 +61,7 @@
   "scan_banking": "Scannez avec votre application bancaire",
   "reference": "Référence",
   "transfer_no_confirmation": "1. Ouvrez votre application bancaire et scannez le code QR. 2. Vérifiez les informations. 3. Validez le virement dans votre application. Le kiosque ne prélève aucun montant.",
-  "transfer_record": "Terminer",
+  "transfer_record": "Enregistrer le don",
   "transfer_pending": "Votre intention de don est enregistrée. Validez le virement dans votre application bancaire. La réception du paiement n’est pas encore confirmée.",
   "prepare_checkout": "Préparer le paiement sécurisé",
   "start_terminal": "Démarrer le paiement par carte",

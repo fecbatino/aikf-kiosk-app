@@ -61,7 +61,7 @@
   "scan_banking": "Mit Banking-App scannen",
   "reference": "Verwendungszweck",
   "transfer_no_confirmation": "1. Banking-App öffnen und QR-Code scannen. 2. Angaben prüfen. 3. Überweisung in Ihrer Banking-App freigeben. Am Kiosk wird kein Geld eingezogen.",
-  "transfer_record": "Fertig",
+  "transfer_record": "Spende eintragen",
   "transfer_pending": "Ihre Spendenabsicht ist gespeichert. Bitte geben Sie die Überweisung in Ihrer Banking-App frei. Ein Zahlungseingang ist damit noch nicht bestätigt.",
   "prepare_checkout": "Sicheren Checkout vorbereiten",
   "start_terminal": "Kartenzahlung starten",
