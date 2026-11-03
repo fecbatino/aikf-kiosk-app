@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Alert, Box, Button, Checkbox, CircularProgress, FormControlLabel, InputAdornment, Paper, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, InputAdornment, Paper, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
@@ -105,7 +105,7 @@ export default function DonatePage() {
     if (active) void cancel();
     else if (i18n.language !== 'de' || isDark) reset();
   }, [idle, active, busy, done, cancel, reset, i18n.language, isDark]);
-  useEffect(() => { if (!done) return; setCountdown(15); const timer = window.setInterval(() => setCountdown(x => Math.max(0, x - 1)), 1000); return () => clearInterval(timer); }, [done]);
+  useEffect(() => { if (!done) return; setCountdown(done === 'pending' ? 60 : 15); const timer = window.setInterval(() => setCountdown(x => Math.max(0, x - 1)), 1000); return () => clearInterval(timer); }, [done]);
   useEffect(() => { if (done && countdown === 0) reset(); }, [done, countdown, reset]);
   useEffect(() => {
     if (!attempt || done) return;
@@ -163,7 +163,12 @@ export default function DonatePage() {
     finally { locked.current = false; setBusy(false); }
   }
 
-  if (done) return <Paper className="thank-you" elevation={0}><div className="success-mark"><Icon name={done === 'paid' ? 'check' : 'heart'} size={40} /></div><Typography component="h1" variant="h3" ref={heading} tabIndex={-1}>{t(done === 'pending' ? 'transfer_prepared_title' : done === 'processing' ? 'processing_title' : 'thank_you_title')}</Typography><Typography className="thank-you-amount">{money(amount || 0)}</Typography><Typography color="text.secondary">{t(done === 'paid' ? 'payment_confirmed' : done === 'processing' ? 'payment_processing' : 'transfer_pending')}</Typography><Button variant="contained" onClick={reset} sx={{ mt: 4 }}>{t('new_donation')}</Button><Typography variant="body2" color="text.secondary" sx={{ mt: 3 }}>{t('thank_you_reset_text', { count: countdown })}</Typography></Paper>;
+  // Bank transfer: the QR code stays on the closing screen for donors who tapped before scanning.
+  const transfer = done === 'pending' && bankReady && amount;
+  if (done) return <Paper className={`thank-you ${transfer ? 'with-transfer' : ''}`} elevation={0}>
+    <div className="thank-you-text">{!transfer && <div className="success-mark"><Icon name={done === 'paid' ? 'check' : 'heart'} size={40} /></div>}<Typography component="h1" variant="h3" ref={heading} tabIndex={-1}>{t(done === 'pending' ? 'transfer_prepared_title' : done === 'processing' ? 'processing_title' : 'thank_you_title')}</Typography><Typography className="thank-you-amount">{money(amount || 0)}</Typography><Typography color="text.secondary">{t(done === 'paid' ? 'payment_confirmed' : done === 'processing' ? 'payment_processing' : 'transfer_pending')}</Typography>{done !== 'paid' && <Typography className="thank-you-support">{t('thank_you_support')}</Typography>}<Button variant="contained" onClick={reset} sx={{ mt: 4 }}>{t('new_donation')}</Button><Typography variant="body2" color="text.secondary" sx={{ mt: 3 }}>{t('thank_you_reset_text', { count: countdown })}</Typography></div>
+    {transfer && <div className="thank-you-transfer"><strong>{t('scan_banking')}</strong><div className="qr-frame"><QRCodeSVG value={giroCode(bank, transfer, reference)} size={220} marginSize={4} level="M" title={t('bank_qr_title')} /></div><div className="bank-field"><span>IBAN</span><code dir="ltr">{bank.iban.match(/.{1,4}/g)?.join(' ')}</code></div><div className="bank-field"><span>{t('reference')}</span><strong dir="ltr">{reference}</strong></div></div>}
+  </Paper>;
 
   const progress = anonymous ? [['step_amount', 0], ['step_payment', 2]] as const : [['step_amount', 0], ['step_donor', 1], ['step_payment', 2]] as const;
   async function copyBank(text: string) { try { await navigator.clipboard.writeText(text); setCopyStatus(t('bank_copied')); } catch { setCopyStatus(t('bank_copy_error')); } }
@@ -195,15 +200,14 @@ export default function DonatePage() {
             <span className="category-icon"><Icon name={icon} size={24} /></span><span className="category-label">{t(`category_${id}`)}</span><span className="selection-check">{category === id && <Icon name="check" size={11} />}</span>
           </Button>)}
         </div>
-        <Button className="contact-toggle" onClick={() => setAnonymous(current => !current)} startIcon={<Icon name="users" size={20} />}>{t(anonymous ? 'contact_add' : 'contact_remove')}</Button>
+        <Button className={`contact-toggle ${anonymous ? '' : 'selected'}`} aria-pressed={!anonymous} onClick={() => setAnonymous(current => !current)} startIcon={<Icon name={anonymous ? 'users' : 'check'} size={20} />}>{t('contact_add')}</Button>
         <Button className="primary-action" fullWidth variant="contained" disabled={!amount} onClick={next} endIcon={<Icon name="arrow" size={20} />}>{t('btn_next')}</Button>
       </>}
       {step === 1 && <Box component="form" onSubmit={event => { event.preventDefault(); next(); }}>
-        <div className={`anonymous-choice ${anonymous ? 'selected' : ''}`}><span className="donor-choice-icon"><Icon name="hand" size={28} /></span><div><FormControlLabel control={<Checkbox checked={anonymous} onChange={event => { setAnonymous(event.target.checked); setName(''); setEmail(''); clearBankRecord(); }} />} label={t('donate_anonymously')} /><Typography variant="body2" color="text.secondary">{t('anonymous_caption')}</Typography></div></div>
-        {!anonymous && <div className="donor-fields">
+        <div className="donor-fields">
           <TextField required label={t('donor_name_label')} value={name} onChange={e => { setName(e.target.value); clearBankRecord(); }} fullWidth slotProps={{ htmlInput: { maxLength: 120, autoComplete: 'off' } }} />
           <TextField type="email" label={t('email_optional')} value={email} onChange={e => { setEmail(e.target.value); clearBankRecord(); }} fullWidth helperText={t('email_hint')} slotProps={{ htmlInput: { maxLength: 254, autoComplete: 'off' } }} />
-        </div>}
+        </div>
         <div className="privacy-note"><Icon name="lock" size={19} /><span>{t('data_note')}</span></div>
         <div className="step-actions"><Button onClick={() => setStep(0)}>{t('btn_back')}</Button><Button variant="contained" type="submit" endIcon={<Icon name="arrow" size={20} />}>{t('btn_next')}</Button></div>
       </Box>}

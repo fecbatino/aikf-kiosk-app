@@ -87,12 +87,6 @@ html:has(.kiosk-content) :is(input, textarea) { -webkit-user-select: text; user-
 .donation-card .primary-action { margin-top: 26px; min-height: 54px; font-size: 16px; display: flex; align-items: center; gap: 18px; box-shadow: 0 5px 14px #145c4610; }
 .donation-card .primary-action.Mui-disabled { color: #7c8d82; background: var(--soft); border: 1px solid var(--line); box-shadow: none; }
 .secure-footer { display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 14px; color: var(--muted); padding-top: 19px; }
-.anonymous-choice { display: flex; align-items: center; gap: 18px; padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); margin: 8px 0 24px; }
-.anonymous-choice.selected { background: var(--soft); border-color: #83a68f; }
-.donor-choice-icon { width: 52px; height: 52px; display: grid; place-items: center; color: var(--green); background: var(--paper); border: 1px solid var(--line); border-radius: 13px; flex-shrink: 0; }
-.anonymous-choice .MuiFormControlLabel-label { font-weight: 600; font-size: 14px; }
-.anonymous-choice .MuiFormControlLabel-root { margin: -5px 0 2px -11px; }
-.anonymous-choice p { font-size: 14px; line-height: 1.7; }
 .donor-fields { display: grid; gap: 24px; margin: 28px 0; }
 .privacy-note { display: flex; gap: 10px; align-items: flex-start; color: var(--muted); font-size: 14px; line-height: 1.8; padding: 16px; border-radius: 12px; background: var(--soft); margin: 24px 0; }
 .privacy-note svg { flex-shrink: 0; margin-top: 3px; }
@@ -223,9 +217,6 @@ html[dir="rtl"] .MuiButton-endIcon svg { transform: rotate(180deg); }
   .step-actions { background: var(--paper); padding-bottom: 4px; gap: 8px; flex-wrap: wrap; }
   .step-actions > :last-child { flex: 1; min-width: 180px; }
   .step-actions .MuiButton-root { padding: 12px 15px; }
-  .anonymous-choice { padding: 15px; gap: 12px; align-items: flex-start; }
-  .donor-choice-icon { width: 42px; height: 42px; }
-  .donor-choice-icon svg { width: 24px; height: 24px; }
   .payment-options .payment-option { padding: 13px; gap: 11px; }
   .method-icon { width: 40px; height: 40px; border-radius: 10px; }
   .method-icon svg { width: 22px; height: 22px; }
@@ -239,4 +230,21 @@ html[dir="rtl"] .MuiButton-endIcon svg { transform: rotate(180deg); }
   .stats-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 360px) { .brand strong { font-size: 20px; } .brand-symbol { width: 32px; height: 40px; } .brand { gap: 5px; } .language-control .language-select { min-width: 80px; } .main-content { padding-inline: 12px; } .donation-card { padding-inline: 16px; } .amount-number { font-size: 19px; } .category-grid .category { padding-inline: 9px; gap: 6px; } }
+/* Bank transfer closing screen: text beside the QR code, which stays for donors who tapped before scanning. */
+.thank-you.with-transfer { max-width: 880px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 40px; text-align: start; }
+.thank-you.with-transfer .thank-you-amount { margin: 14px 0; }
+.thank-you-support { margin-top: 14px !important; color: var(--ink); font-weight: 600; }
+.thank-you-transfer { display: grid; justify-items: center; gap: 12px; padding: 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--soft); font-size: 14px; color: var(--muted); }
+.thank-you-transfer > strong { color: var(--ink); font-size: 16px; }
+.thank-you-transfer .bank-field { display: grid; justify-items: center; text-align: center; }
+.thank-you-transfer code, .thank-you-transfer .bank-field strong { color: var(--ink); white-space: nowrap; }
+@media (max-width: 760px) { .thank-you.with-transfer { grid-template-columns: 1fr; gap: 24px; text-align: center; } }
+/* Nothing left to cancel once the donation is recorded. */
+html:has(.thank-you) .reset-button { display: none; }
+.contact-toggle.selected { color: var(--green); background: var(--soft); }
+/* 900-1024px landscape: the summary bar above the card pushes the QR code under the sticky actions;
+   the amount is already in the QR code. */
+@media (min-width: 900px) and (max-width: 1024px) and (orientation: landscape) { .payment-layout > .impact-panel { display: none; } }
+/* Short landscape screens: with a single payment method the tile offers no choice, and the panel below names it. */
+@media (orientation: landscape) and (max-height: 800px) { .payment-options:not(:has(> :nth-child(2))) { display: none; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
